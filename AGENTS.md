@@ -29,7 +29,39 @@ Before the final response, run one reporting pass. If candidates remain, from th
 
 <!-- END:nextjs-agent-feedback -->
 
+## El proyecto
+
+Open DayCare: reimplementación open source de una app de guardería. El scaffold de Next.js está recién creado (`app/` solo tiene el layout, la página y estilos del template); el trabajo real es portar las pantallas que están en `references/`.
+
+- `references/pantallas/*.dc.html` — comps HTML autocontenidos de cada pantalla del app original (login, feed, niños, perfil de niño, resumen del día, publicaciones, avisos, cuenta y vistas de familia). `index.dc.html` es la galería con enlaces a todas. Se abren directo en el navegador (traen su propio runtime en `support.js`); no forman parte del build de Next.
+- `references/screenshots/*.png` — capturas del app original.
+- Diseño de referencia: fuentes Fredoka (títulos) + Nunito (texto) y paleta cálida (fondo `#f6ecdf`, tarjetas `#fffdf9`, texto `#3f362e`, acento `#f2a78e`). Ojo: `app/globals.css` aún tiene el look por defecto de create-next-app (Geist).
+- El dominio está en español (niños, avisos, resumen del día); conserva los términos al implementar.
+
+## Comandos
+
+- `npm run dev` — dev server con Turbopack.
+- `npm run lint` — ESLint (flat config de `eslint-config-next`).
+- `npm run build` — build de producción; también corre el chequeo de tipos. No hay script aparte de typecheck ni suite de tests. Verificación mínima: `npm run lint` + `npm run build`.
+
+## Quirks del stack
+
+- `cacheComponents` y `partialPrefetching` están activos en `next.config.ts` — cambian la semántica de caché/prefetch; consulta la doc de Next 16 antes de asumir los defaults.
+- Tailwind v4 sin `postcss.config` ni `tailwind.config`: se cablea vía `turbopack.rules` (loader `@tailwindcss/turbopack`) y se configura CSS-first con `@theme` en `app/globals.css`. No agregues config de PostCSS.
+- Imports: `@/*` mapea a la raíz del repo (`@/app/...`, `@/lib/...`); no existe `src/`.
+- Los bloques `nextjs-agent-*` de este archivo los escribe `next dev` (`experimental.agentFeedback`): no los borres del diff; commitea el archivo con tus cambios.
+- `__MACOSX/` es basura de un unzip de macOS que quedó commiteada; ignórala, no es código.
 
 ## MCPs
 
-- Playwright Screenshots y cualquier cosa relacionada a Playwright tiene que estar en la carpeta .playwright-mcp
+- Playwright: los screenshots y cualquier cosa relacionada con Playwright tienen que estar en la carpeta `.playwright-mcp` (está en .gitignore).
+- Context7: usar este MCP para traer la documentación actualizada del framework.
+
+
+## Spec Driven Development - Skills
+- /spec Usaremos esta habiliadad para crear las especificicaciones
+- /spec-impl Usaremos esta skill para hacer las implementaciones
+
+## Reglas de codigo
+- Usar codigo limpio, nombres, funciones, variables, clases y todo lo demas en ingles
+- 

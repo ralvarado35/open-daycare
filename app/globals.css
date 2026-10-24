@@ -1,26 +1,54 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+ * OpenDayCare design system — warm palette and typography from the reference
+ * comps (references/pantallas/*.dc.html). Code and comments are in English;
+ * user-facing UI copy stays in Spanish.
+ */
+
+/* `static` keeps every token available as a var() in custom CSS (body, scrollbar). */
+@theme static {
+  /* Warm palette */
+  --color-cream: #f6ecdf; /* page background */
+  --color-card: #fffdf9; /* card surface */
+  --color-ink: #3f362e; /* primary text */
+  --color-ink-body: #4a4038; /* post body copy */
+  --color-ink-muted: #6e6359; /* idle nav labels */
+  --color-ink-soft: #94887b; /* secondary labels */
+  --color-ink-faint: #a89a8b; /* tertiary labels */
+  --color-line: #ece0d0; /* card borders */
+  --color-line-soft: #f0e6d8; /* card inner dividers */
+  --color-line-faint: #e7dac8; /* section divider */
+  --color-accent: #f2a78e; /* brand accent */
+  --color-accent-strong: #ee8164; /* CTA gradient end */
+  --color-accent-deep: #e0654a; /* likes, action chips */
+  --color-accent-dark: #d9583c; /* active nav label, eyebrow */
+  --color-accent-soft: #fbe3d8; /* active nav background */
 }
 
+/* Fonts are self-hosted via next/font and injected as CSS variables on <html>. */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-nunito), system-ui, sans-serif;
+  --font-display: var(--font-fredoka), system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  body {
+    background-color: var(--color-cream);
+    color: var(--color-ink);
+    font-family: var(--font-nunito), system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
   }
-}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  /* Custom warm scrollbar, as in the reference comps. */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #e4d6c4;
+    border: 3px solid transparent;
+    border-radius: 8px;
+    background-clip: content-box;
+  }
 }
