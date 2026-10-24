@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Reference comps (self-contained HTML runtime) and macOS unzip leftovers
+    // are not part of the Next app.
+    "references/**",
+    "__MACOSX/**",
   ]),
 ]);
 

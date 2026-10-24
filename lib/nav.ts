@@ -1,0 +1,25 @@
+export type NavKey = "feed" | "children" | "notices" | "account";
+
+export type NavItem = {
+  key: NavKey;
+  // Spanish UI label: "Feed", "Niños", "Avisos", "Mi cuenta".
+  label: string;
+  href: string;
+};
+
+// Placeholder href for screens that are not implemented yet. Keep every future
+// route centralized here so it can be re-wired in a single place later on.
+const placeholderHref = "#";
+
+export const navItems: NavItem[] = [
+  { key: "feed", label: "Feed", href: "/" },
+  { key: "children", label: "Niños", href: placeholderHref },
+  { key: "notices", label: "Avisos", href: placeholderHref },
+  { key: "account", label: "Mi cuenta", href: placeholderHref },
+];
+
+// Routes for screens that do not exist yet in the app.
+export const newPostHref = placeholderHref;
+export const postDetailHref = placeholderHref;
+export const photoHref = placeholderHref;
+export const logoutHref = placeholderHref;

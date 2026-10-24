@@ -33,6 +33,13 @@
 }
 
 @layer base {
+  /* Mirror the comps' base: browsers' default "normal" line-height, not the
+     1.5 Tailwind preflight enforces (keeps heading/label boxes pixel-identical
+     to the reference designs). */
+  html {
+    line-height: normal;
+  }
+
   body {
     background-color: var(--color-cream);
     color: var(--color-ink);
