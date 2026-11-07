@@ -80,31 +80,31 @@ Los 8 niños del comp: Mateo Fernández, Sofía Méndez, Benjamín Ruiz, Valenti
 2. `lib/nav.ts`: `children` → `/kids` y los 4 nuevos placeholders. *Manual: el sidebar navega a `/kids` (no `#`).*
 3. `app/components/kid-card.tsx`: card con avatar redondo inicial, nombre Fredoka, subtítulo «X años · Y padres vinculados» y cola condicional: badge de alergia (MANÍ/LACTOSA), badge VINCULAR o chevron. *Manual: las 3 variantes renderizan como el comp.*
 4. `app/kids/page.tsx`: eyebrow «GESTIÓN», título «Niños», CTA «Agregar niño», buscador, divisor «SALA SOLES · 8 niños» y grid de 2 columnas (1 columna <768px). `Sidebar` y `MobileNav` con `active="children"`. *Manual: `/kids` idéntica al comp a ≥768px.*
-5. `app/kids/[childId]/page.tsx` con `generateStaticParams` (y `dynamicParams = false`): header con avatar, nombre, edad+sala, botón Editar; banner rojo «Alergias y notas» (solo si `allergyNotice`); card de datos (fecha de nacimiento / sala / ingreso); al lado, card de «PADRES VINCULADOS» con CTA negro «Resumen del día», filas de padres con chips ACTIVA/PENDIENTE y link dashed «Vincular otro padre». Layout con `flex-wrap`: las dos columnas se apilan a <768px. *Manual: `/kids/mateo-fernandez` idéntica al comp; cada card de la lista navega a su perfil con sus datos.*
+5. `app/kids/[childId]/page.tsx` con `generateStaticParams` (sin `dynamicParams = false`: no es compatible con `cacheComponents` en Next 16; se reemplaza por guard `notFound()` para slugs desconocidos): header con avatar, nombre, edad+sala, botón Editar; banner rojo «Alergias y notas» (solo si `allergyNotice`); card de datos (fecha de nacimiento / sala / ingreso); al lado, card de «PADRES VINCULADOS» con CTA negro «Resumen del día», filas de padres con chips ACTIVA/PENDIENTE y link dashed «Vincular otro padre». Layout con `flex-wrap`: las dos columnas se apilan a <768px. *Manual: `/kids/mateo-fernandez` idéntica al comp; cada card de la lista navega a su perfil con sus datos.*
 6. Verificación: `npm run lint` + `npm run build` + screenshots con Playwright MCP (desktop y móvil de ambas rutas) contra los comps.
 
 ## Criterios de aceptación
 
-- [ ] `npm run lint` y `npm run build` pasan sin errores.
-- [ ] A 1280px, screenshot de `/kids` visualmente idéntico al comp de la lista (eyebrow, título, CTA, buscador, divisor, grid 2×4, sombras y radios).
-- [ ] A 1280px, screenshot de `/kids/mateo-fernandez` visualmente idéntico al comp del perfil (banner de alergias, card de datos, panel de padres, CTA Resumen del día).
-- [ ] `/kids` muestra exactamente los 8 niños del comp con sus avatares, colores, subtítulos y badges correctos (MANÍ en Mateo y Tomás, VINCULAR en Valentina, chevron en el resto).
-- [ ] Cada card de la lista navega al perfil de su propio niño: `/kids/mateo-fernandez`, `/kids/sofia-mendez`, etc., con los datos mock correspondientes.
-- [ ] Los links Editar, Agregar niño, Resumen del día, Vincular otro padre y Cerrar sesión usan `href="#"` y no navegan.
-- [ ] «Volver a Niños» regresa a `/kids`.
-- [ ] El buscador es un input estático: escribir en él no filtra ni cambia nada.
-- [ ] A ≥768px el sidebar está visible con «Niños» activo en ambas rutas; a <768px está oculto y aparece top bar + FAB + drawer funcionando (abre con hamburguesa, cierra con backdrop o Escape).
-- [ ] A <768px la lista se ve en 1 columna y el perfil apila sus dos columnas sin desbordes.
-- [ ] `generateStaticParams` genera los 8 perfiles como rutas estáticas (`/kids/[childId]` no produce 404 ni render dinámico en el build).
-- [ ] No hay dependencias nuevas; los SVG se copian inline de los comps.
-- [ ] El código interno está en inglés (identificadores, tipos, valores de uniones, comentarios, nombres de archivo; rutas `/kids`); los textos visibles quedan en español.
-- [ ] Sin errores en consola del navegador.
+- [x] `npm run lint` y `npm run build` pasan sin errores.
+- [x] A 1280px, screenshot de `/kids` visualmente idéntico al comp de la lista (eyebrow, título, CTA, buscador, divisor, grid 2×4, sombras y radios).
+- [x] A 1280px, screenshot de `/kids/mateo-fernandez` visualmente idéntico al comp del perfil (banner de alergias, card de datos, panel de padres, CTA Resumen del día).
+- [x] `/kids` muestra exactamente los 8 niños del comp con sus avatares, colores, subtítulos y badges correctos (MANÍ en Mateo y Tomás, VINCULAR en Valentina, chevron en el resto).
+- [x] Cada card de la lista navega al perfil de su propio niño: `/kids/mateo-fernandez`, `/kids/sofia-mendez`, etc., con los datos mock correspondientes.
+- [x] Los links Editar, Agregar niño, Resumen del día, Vincular otro padre y Cerrar sesión usan `href="#"` y no navegan.
+- [x] «Volver a Niños» regresa a `/kids`.
+- [x] El buscador es un input estático: escribir en él no filtra ni cambia nada.
+- [x] A ≥768px el sidebar está visible con «Niños» activo en ambas rutas; a <768px está oculto y aparece top bar + FAB + drawer funcionando (abre con hamburguesa, cierra con backdrop o Escape).
+- [x] A <768px la lista se ve en 1 columna y el perfil apila sus dos columnas sin desbordes.
+- [x] `generateStaticParams` genera los 8 perfiles como rutas estáticas (`/kids/[childId]` no produce 404 ni render dinámico en el build).
+- [x] No hay dependencias nuevas; los SVG se copian inline de los comps.
+- [x] El código interno está en inglés (identificadores, tipos, valores de uniones, comentarios, nombres de archivo; rutas `/kids`); los textos visibles quedan en español.
+- [x] Sin errores en consola del navegador.
 
 ## Decisiones
 
 - **Sí:** rutas en inglés `/kids` y `/kids/[childId]` (decisión del usuario), coherente con la regla de código interno en inglés.
 - **No:** `/ninos` como ruta — descartada al elegir el slug en inglés.
-- **Sí:** ruta dinámica con `generateStaticParams` + `dynamicParams = false`: 8 páginas estáticas, sin coste en runtime y compatible con `cacheComponents`.
+- **Sí:** ruta dinámica con `generateStaticParams`: los 8 perfiles quedan prerenderizados en build. Con `cacheComponents` activo, `dynamicParams = false` no es compatible (fue eliminado del segment config en v16, según `node_modules/next/dist/docs`); el rechazo de slugs desconocidos se hace con guard `notFound()` en la página (recomendación literal de la guía *Migrating to Cache Components*). Amparado en el riesgo anunciado en esta spec; decisión tomada con el usuario durante la implementación.
 - **No:** pasar los datos del niño como props de cliente o en query strings.
 - **Sí:** buscador solo visual (decisión del usuario): «solo interfaces», todo el render queda en server components.
 - **No:** client component de filtrado — reintroduciría JS innecesario para una demo estática.
@@ -118,7 +118,7 @@ Los 8 niños del comp: Mateo Fernández, Sofía Méndez, Benjamín Ruiz, Valenti
 
 | Riesgo | Mitigación |
 | ------ | ---------- |
-| `cacheComponents` cambia la semántica de params/prefetch en rutas dinámicas | Consultar la doc de Next 16 (Context7) antes de implementar el paso 5; el patrón `generateStaticParams` + `dynamicParams = false` evita render bajo demanda. |
+| `cacheComponents` cambia la semántica de params/prefetch en rutas dinámicas | Consultar la doc de Next 16 (Context7) antes de implementar el paso 5; `generateStaticParams` prerenderiza los 8 perfiles y el guard `notFound()` rechaza slugs desconocidos (`dynamicParams` no es compatible con `cacheComponents`). |
 | Datos inventados para 7 de los 8 perfiles pueden desviar el look del comp | El comp solo describe el perfil de Mateo; se reutilizan exactamente los mismos estilos y estructuras, cambiando solo valores. El comp es la fuente de verdad de Mateo. |
 | Layout del perfil a ancho medio (1 columna estrecha + panel de 300px) | Usar `flex-wrap` con `min-width` como en el comp y verificar screenshot a 1024px además de 1280px y móvil. |
 

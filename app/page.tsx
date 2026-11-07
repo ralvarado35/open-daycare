@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { CameraIcon } from "@/app/components/icons";
 import { MobileNav } from "@/app/components/mobile-nav";
 import { PostCard } from "@/app/components/post-card";
@@ -22,7 +23,7 @@ export default function Home() {
           </header>
 
           {/* Composer shortcut to the "new post" screen */}
-          <a
+          <Link
             href={newPostHref}
             className="mb-6 flex items-center gap-[14px] rounded-[18px] border border-line bg-card px-[18px] py-[14px] shadow-[0_4px_14px_-10px_rgba(120,90,60,0.4)]"
           >
@@ -33,7 +34,7 @@ export default function Home() {
             <span className="flex h-[38px] w-[38px] flex-none items-center justify-center rounded-[12px] bg-accent-soft text-accent-deep">
               <CameraIcon size={19} />
             </span>
-          </a>
+          </Link>
 
           {/* "Posted today" divider */}
           <div className="mb-[14px] flex items-center gap-[14px]">

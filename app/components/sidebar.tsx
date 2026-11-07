@@ -61,21 +61,21 @@ export function SidebarContent({ active, onNavigate, onClose }: SidebarContentPr
         ) : null}
       </div>
 
-      <a
+      <Link
         href={newPostHref}
         onClick={onNavigate}
         className="mb-[18px] flex w-full items-center justify-center gap-2 rounded-[14px] bg-[linear-gradient(180deg,#f4977e,#ee8164)] p-3 text-[14.5px] font-extrabold text-white shadow-[0_8px_18px_-8px_rgba(238,129,100,0.75)]"
       >
         <PlusIcon size={17} />
         Nueva publicación
-      </a>
+      </Link>
 
       <nav className="flex flex-1 flex-col gap-1">
         {navItems.map((item) => {
           const isActive = item.key === active;
           const ItemIcon = navIcons[item.key];
           return (
-            <a
+            <Link
               key={item.key}
               href={item.href}
               onClick={onNavigate}
@@ -88,7 +88,7 @@ export function SidebarContent({ active, onNavigate, onClose }: SidebarContentPr
             >
               <ItemIcon size={19} />
               {item.label}
-            </a>
+            </Link>
           );
         })}
       </nav>
@@ -102,7 +102,7 @@ export function SidebarContent({ active, onNavigate, onClose }: SidebarContentPr
             <div className="text-sm font-extrabold text-ink">Caro Giménez</div>
             <div className="text-xs text-ink-faint">Maestra · Soles</div>
           </div>
-          <a
+          <Link
             href={logoutHref}
             onClick={onNavigate}
             title="Cerrar sesión"
@@ -110,7 +110,7 @@ export function SidebarContent({ active, onNavigate, onClose }: SidebarContentPr
             className="flex h-8 w-8 flex-none items-center justify-center rounded-[10px] bg-cream text-ink-soft"
           >
             <LogoutIcon size={16} />
-          </a>
+          </Link>
         </div>
       </div>
     </>
