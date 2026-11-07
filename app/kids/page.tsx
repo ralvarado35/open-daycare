@@ -1,10 +1,9 @@
-import Link from "next/link";
 import { MobileNav } from "@/app/components/mobile-nav";
-import { PlusIcon, SearchIcon } from "@/app/components/icons";
+import { SearchIcon } from "@/app/components/icons";
 import { KidCard } from "@/app/components/kid-card";
+import { AddChildDialog } from "@/app/components/add-child-dialog";
 import { Sidebar } from "@/app/components/sidebar";
 import { kids } from "@/lib/kids-data";
-import { addChildHref } from "@/lib/nav";
 
 /**
  * Children list. Static rendering of the mock data from lib/kids-data.ts,
@@ -26,13 +25,7 @@ export default function Kids() {
               </p>
               <h1 className="font-display text-[30px] font-semibold text-ink">Niños</h1>
             </div>
-            <Link
-              href={addChildHref}
-              className="flex flex-none items-center gap-2 rounded-[14px] bg-[linear-gradient(180deg,#f4977e,#ee8164)] px-[18px] py-[11px] text-[14.5px] font-extrabold text-white shadow-[0_8px_18px_-8px_rgba(238,129,100,0.7)]"
-            >
-              <PlusIcon />
-              Agregar niño
-            </Link>
+            <AddChildDialog />
           </div>
 
           {/* Decorative search box (no filtering logic) */}
