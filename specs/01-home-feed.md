@@ -72,18 +72,18 @@ Los valores semánticos de `PostKind` y `NavKey` son ingleses; la capa de presen
 
 ## Criterios de aceptación
 
-- [ ] `npm run lint` y `npm run build` pasan sin errores.
-- [ ] A 1280px, screenshot del home visualmente idéntico al comp (layout, colores, tipografías, espaciados, sombras).
-- [ ] El saludo dice «Buenas, Caro», «12 niños · martes 17 jun» y el eyebrow «GUARDERÍA · SALA SOLES».
-- [ ] Se renderizan los 3 posts: logro (chip verde), actividad (chip celeste + placeholder de foto), anuncio (chip azul + megáfono).
-- [ ] Contadores de reacciones (3, 5, 8) y comentarios (1, 2, 0) coinciden con el comp.
-- [ ] Todos los links a pantallas inexistentes usan `href="#"` y no navegan.
-- [ ] A ≥768px el sidebar está fijo con «Feed» activo; a <768px está oculto.
-- [ ] A <768px: top bar (logo + Sala Soles + avatar C), FAB «+» abajo a la derecha, drawer que abre con la hamburguesa y cierra con backdrop o Escape.
-- [ ] Fredoka y Nunito cargan vía `next/font`, sin `<link>` a Google Fonts.
-- [ ] No queda rastro del scaffold (Geist, ilustraciones, inglés) ni dark mode por defecto.
-- [ ] El código interno está en inglés (identificadores, tipos, valores de uniones, comentarios, nombres de archivo); los textos visibles de la UI quedan en español.
-- [ ] Sin errores en consola del navegador.
+- [x] `npm run lint` y `npm run build` pasan sin errores.
+- [x] A 1280px, screenshot del home visualmente idéntico al comp (layout, colores, tipografías, espaciados, sombras).
+- [x] El saludo dice «Buenas, Caro», «12 niños · martes 17 jun» y el eyebrow «GUARDERÍA · SALA SOLES».
+- [x] Se renderizan los 3 posts: logro (chip verde), actividad (chip celeste + placeholder de foto), anuncio (chip azul + megáfono).
+- [x] Contadores de reacciones (3, 5, 8) y comentarios (1, 2, 0) coinciden con el comp.
+- [x] Todos los links a pantallas inexistentes usan `href="#"` y no navegan.
+- [x] A ≥768px el sidebar está fijo con «Feed» activo; a <768px está oculto.
+- [x] A <768px: top bar (logo + Sala Soles + avatar C), FAB «+» abajo a la derecha, drawer que abre con la hamburguesa y cierra con backdrop o Escape.
+- [x] Fredoka y Nunito cargan vía `next/font`, sin `<link>` a Google Fonts.
+- [x] No queda rastro del scaffold (Geist, ilustraciones, inglés) ni dark mode por defecto.
+- [x] El código interno está en inglés (identificadores, tipos, valores de uniones, comentarios, nombres de archivo); los textos visibles de la UI quedan en español.
+- [x] Sin errores en consola del navegador.
 
 ## Decisiones
 

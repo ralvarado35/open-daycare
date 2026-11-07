@@ -64,4 +64,5 @@ Open DayCare: reimplementación open source de una app de guardería. El scaffol
 
 ## Reglas de codigo
 - Usar codigo limpio, nombres, funciones, variables, clases y todo lo demas en ingles
-- 
+
+
