@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import type { NavKey } from "@/lib/nav";
 import { newPostHref } from "@/lib/nav";
 import { MenuIcon, PlusIcon, SunIcon } from "./icons";
@@ -55,13 +56,13 @@ export function MobileNav({ active }: MobileNavProps) {
       </header>
 
       {/* Floating "new post" button */}
-      <a
+      <Link
         href={newPostHref}
         aria-label="Nueva publicación"
         className="fixed bottom-5 right-5 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-[linear-gradient(180deg,#f4977e,#ee8164)] text-white shadow-[0_8px_18px_-8px_rgba(238,129,100,0.75)] md:hidden"
       >
         <PlusIcon size={26} />
-      </a>
+      </Link>
 
       {/* Drawer backdrop: click to close */}
       <div

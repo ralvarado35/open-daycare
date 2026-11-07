@@ -166,3 +166,41 @@ export function CloseIcon(props: IconProps) {
     </IconShell>
   );
 }
+
+/** Right chevron (kid list card tail). */
+export function ChevronRightIcon(props: IconProps) {
+  return (
+    <IconShell size={18} strokeWidth={2.2} {...props}>
+      <path d="m9 18 6-6-6-6" />
+    </IconShell>
+  );
+}
+
+/** Search (kids list header). */
+export function SearchIcon(props: IconProps) {
+  return (
+    <IconShell size={18} {...props}>
+      <circle cx="11" cy="11" r="7" />
+      <path d="m21 21-4.3-4.3" />
+    </IconShell>
+  );
+}
+
+/** Left chevron ("Volver a Niños" link). */
+export function ChevronLeftIcon(props: IconProps) {
+  return (
+    <IconShell size={18} strokeWidth={2.2} {...props}>
+      <path d="m15 18-6-6 6-6" />
+    </IconShell>
+  );
+}
+
+/** Warning triangle (allergy banner). */
+export function WarningIcon(props: IconProps) {
+  return (
+    <IconShell size={22} strokeWidth={2.2} {...props}>
+      <path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z" />
+      <path d="M12 9v4M12 17h.01" />
+    </IconShell>
+  );
+}

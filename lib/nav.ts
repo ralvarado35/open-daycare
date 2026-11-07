@@ -13,7 +13,7 @@ const placeholderHref = "#";
 
 export const navItems: NavItem[] = [
   { key: "feed", label: "Feed", href: "/" },
-  { key: "children", label: "Niños", href: placeholderHref },
+  { key: "children", label: "Niños", href: "/kids" },
   { key: "notices", label: "Avisos", href: placeholderHref },
   { key: "account", label: "Mi cuenta", href: placeholderHref },
 ];
@@ -23,3 +23,7 @@ export const newPostHref = placeholderHref;
 export const postDetailHref = placeholderHref;
 export const photoHref = placeholderHref;
 export const logoutHref = placeholderHref;
+export const addChildHref = placeholderHref;
+export const editChildHref = placeholderHref;
+export const daySummaryHref = placeholderHref;
+export const linkParentHref = placeholderHref;

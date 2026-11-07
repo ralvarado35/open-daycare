@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Post, PostKind } from "@/lib/feed-data";
 import { newPostHref, photoHref, postDetailHref } from "@/lib/nav";
 import { CommentIcon, HeartIcon, MegaphoneIcon, PhotoIcon } from "./icons";
@@ -63,13 +64,13 @@ export function PostCard({ post }: PostCardProps) {
       <p className="text-[15.5px] leading-[1.55] text-ink-body">{post.body}</p>
 
       {post.photoCaption ? (
-        <a
+        <Link
           href={photoHref}
           className="mt-[14px] flex h-[200px] flex-col items-center justify-center gap-2 rounded-[16px] border-[1.5px] border-dashed border-[#dbcdba] bg-[#f4ece1] text-[#b0a290]"
         >
           <PhotoIcon size={30} />
           <span className="text-[13.5px]">{post.photoCaption}</span>
-        </a>
+        </Link>
       ) : null}
 
       <footer className="mt-4 flex items-center gap-[18px] border-t border-line-soft pt-[14px]">
@@ -77,17 +78,17 @@ export function PostCard({ post }: PostCardProps) {
           <HeartIcon size={19} />
           {post.likes}
         </span>
-        <a
+        <Link
           href={postDetailHref}
           className="flex items-center gap-[7px] text-sm font-bold text-ink-soft"
         >
           <CommentIcon size={18} />
           {post.comments}
-        </a>
+        </Link>
         <span className="flex-1" />
-        <a href={newPostHref} className="text-sm font-extrabold text-[#c5503a]">
+        <Link href={newPostHref} className="text-sm font-extrabold text-[#c5503a]">
           Editar
-        </a>
+        </Link>
       </footer>
     </article>
   );
