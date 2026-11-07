@@ -58,9 +58,19 @@ Open DayCare: reimplementación open source de una app de guardería. El scaffol
 - Context7: usar este MCP para traer la documentación actualizada del framework.
 
 
-## Spec Driven Development - Skills
+## Spec Driven Development - Skills y agente
 - /spec Usaremos esta habiliadad para crear las especificicaciones
 - /spec-impl Usaremos esta skill para hacer las implementaciones
+- /verify-spec Usaremos este comando (`.opencode/commands/verify-spec.md`) para verificar los criterios de aceptación de un spec: se delega en el agente verificador y acepta la ruta del spec como argumento (ej. `/verify-spec specs/02-ninos.md`); sin argumento revisa todos los specs de `specs/*.md`.
+
+## Agente spec-verifier
+
+El agente `spec-verifier` (definido en `.opencode/agents/spec-verifier.md`) es el único que marca/desmarca los checks del bloque "Criterios de aceptación" de los specs en `specs/*.md`, siempre con evidencia real:
+
+- Verifica criterios automáticos con `npm run lint` / `npm run build`, criterios de código leyendo el código (consultando Context7 de Next.js antes de juzgar convenciones del framework) y criterios visuales comparando screenshots de Playwright contra los comps de `references/pantallas/` o los screenshots de `references/screenshots/`.
+- Solo edita el bloque "Criterios de aceptación" de los specs: si encuentra un bug de código, desmarca el criterio y reporta la corrección necesaria, pero no toca `app/`, `lib/`, configs ni ningún otro archivo.
+- No confía en checks previos: re-verifica cada criterio aunque ya esté marcado `[x]`, y deja un reporte con tabla de veredictos (✅ / ❌ / ⚠️) y lista de pendientes.
+- Ya está disponible como subagente (`agent: spec-verifier`), y el comando `/verify-spec` lo invoca por nosotros.
 
 ## Reglas de codigo
 - Usar codigo limpio, nombres, funciones, variables, clases y todo lo demas en ingles
