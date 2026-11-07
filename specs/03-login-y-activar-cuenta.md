@@ -1,6 +1,6 @@
 # SPEC 03 — Login y activar cuenta
 
-> **Estado:** Aprobado
+> **Estado:** Implementado
 > **Depende de:** SPEC 01, SPEC 02
 > **Fecha:** 2026-11-07
 > **Objetivo:** Portar las pantallas `references/pantallas/login.dc.html` y `references/pantallas/activar-cuenta.dc.html` a las rutas estáticas `/login` y `/activate-account`, visualmente idénticas a los comps en desktop y móvil, sin el toggle Personal/Familia y sin autenticación real.
@@ -60,20 +60,20 @@ activateSubmitHref = "#"         // placeholder futuro familia-feed
 
 ## Criterios de aceptación
 
-- [ ] `npm run lint` y `npm run build` pasan sin errores.
-- [ ] A 1280px, screenshot de `/login` visualmente idéntico al comp (panel degradado, 2 columnas, tipografías Fredoka/Nunito, espaciados, radios y sombras).
-- [ ] A 1280px, screenshot de `/activate-account` visualmente idéntico al comp (columna centrada, card de Mateo, inputs, checkbox, CTA y sombras).
-- [ ] `/login` muestra el email prellenado `caro@opendaycare.com`, password con dots y los textos exactos del comp.
-- [ ] En `/login` no existe ningún botón ni texto «Personal» o «Familia» (toggle totalmente fuera).
-- [ ] CTA «Iniciar sesión» navega a `/` real; «Activá tu cuenta» navega a `/activate-account` real.
-- [ ] «¿Olvidaste tu contraseña?», «Activar mi cuenta» usan `href="#"` y no navegan.
-- [ ] `/activate-account` muestra card «Mateo · Sala Soles», código `7K4P9`, email `lucia.fernandez@gmail.com` y checkbox marcado por defecto.
-- [ ] «Iniciar sesión» en `/activate-account` navega a `/login` real.
-- [ ] A <768px, `/login` se apila en una columna (panel compacto arriba) sin desbordes; `/activate-account` tampoco desborda.
-- [ ] Ambas pantallas son full-screen sin `Sidebar`, top bar ni drawer.
-- [ ] No hay dependencias nuevas; `SunIcon` se reutiliza de `app/components/icons.tsx`.
-- [ ] El código interno está en inglés; los textos visibles quedan en español; `lang="es"` se conserva.
-- [ ] Sin errores en consola del navegador.
+- [x] `npm run lint` y `npm run build` pasan sin errores. — ESLint (flat config) y `next build` ejecutados sin errores (TypeScript incluido).
+- [x] A 1280px, screenshot de `/login` visualmente idéntico al comp (panel degradado, 2 columnas, tipografías Fredoka/Nunito, espaciados, radios y sombras). — `.playwright-mcp/verify03-login-desktop-1280.png` captura el panel degradado `#F6A98E→#EC7E62`, dos columnas, `SunIcon`, titular, subtítulo y pie.
+- [x] A 1280px, screenshot de `/activate-account` visualmente idéntico al comp (columna centrada, card de Mateo, inputs, checkbox, CTA y sombras). — `.playwright-mcp/verify03-activate-desktop-1280.png` captura badge, título, card Mateo · Sala Soles, inputs, checkbox marcado y CTA.
+- [x] `/login` muestra el email prellenado `caro@opendaycare.com`, password con dots y los textos exactos del comp. — `app/login/page.tsx:64` `defaultValue="caro@opendaycare.com"`; `type="password"` con `placeholder="••••••••"`; screenshot confirma.
+- [x] En `/login` no existe ningún botón ni texto «Personal» o «Familia» (toggle totalmente fuera). — `app/login/page.tsx` no contiene el bloque toggle del comp; borrado del DOM.
+- [x] CTA «Iniciar sesión» navega a `/` real; «Activá tu cuenta» navega a `/activate-account` real. — `href="/"` y `href={activateAccountHref}` (`lib/nav.ts:33`).
+- [x] «¿Olvidaste tu contraseña?» y «Activar mi cuenta» usan `href="#"` y no navegan. — `forgotPasswordHref` y `familyFeedHref` son `placeholderHref = "#"` (`lib/nav.ts:12,34-35`).
+- [x] `/activate-account` muestra card «Mateo · Sala Soles», código `7K4P9`, email `lucia.fernandez@gmail.com` y checkbox marcado por defecto. — `app/activate-account/page.tsx` card + `defaultValue`s + `defaultChecked`; snapshot `page-2026-11-07T22-30-14-952Z.yml` confirma checkbox `[checked]`.
+- [x] «Iniciar sesión» en `/activate-account` navega a `/login` real. — `href={loginHref}` (`lib/nav.ts:32` = `/login`).
+- [x] A <768px, `/login` se apila en una columna (panel compacto arriba) sin desbordes; `/activate-account` tampoco desborda. — `.playwright-mcp/verify03-login-mobile-390.png` y `verify03-activate-mobile-390.png` (viewport 390×844) sin overflow horizontal.
+- [x] Ambas pantallas son full-screen sin `Sidebar`, top bar ni drawer. — Ninguna de las dos `page.tsx` importa `Sidebar`/`MobileNav`; `min-h-dvh` full-screen.
+- [x] No hay dependencias nuevas; `SunIcon` se reutiliza de `app/components/icons.tsx`. — Ambas páginas importan `SunIcon` de `@/app/components/icons`; no se agregaron paquetes.
+- [x] El código interno está en inglés; los textos visibles quedan en español; `lang="es"` se conserva. — `app/layout.tsx:26` `<html lang="es>`; JSX en inglés, copy de UI en español (rioplatense).
+- [x] Sin errores en consola del navegador. — Consolas de `/login` y `/activate-account` solo muestran advertencias informativas de Chrome ("Password field is not contained in a form", HMR); sin errores JS ni 500.
 
 ## Decisiones
 
