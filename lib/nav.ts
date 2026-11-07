@@ -27,3 +27,9 @@ export const addChildHref = placeholderHref;
 export const editChildHref = placeholderHref;
 export const daySummaryHref = placeholderHref;
 export const linkParentHref = placeholderHref;
+
+// Auth routes.
+export const loginHref = "/login";
+export const activateAccountHref = "/activate-account";
+export const forgotPasswordHref = placeholderHref;
+export const familyFeedHref = placeholderHref;
