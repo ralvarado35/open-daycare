@@ -82,6 +82,30 @@ export function AddChildDialog() {
     setShowToast(false);
   };
 
+  // Máscara dd/mm/aaaa: permite solo dígitos e inserta "/" automáticamente.
+  const maskDate = (value: string): string => {
+    const digits = value.replace(/\D/g, "");
+    if (digits.length <= 2) return digits;
+    if (digits.length <= 4) return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+    return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4, 8)}`;
+  };
+
+  // Valida que sea una fecha real en formato dd/mm/aaaa (no 32/13/9999, etc.).
+  const isValidDate = (value: string): boolean => {
+    const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value);
+    if (!match) return false;
+    const day = Number(match[1]);
+    const month = Number(match[2]);
+    const year = Number(match[3]);
+    if (month < 1 || month > 12 || year < 1900 || year > 2100) return false;
+    const date = new Date(year, month - 1, day);
+    return (
+      date.getFullYear() === year &&
+      date.getMonth() === month - 1 &&
+      date.getDate() === day
+    );
+  };
+
   const validate = (): boolean => {
     const nextErrors: FormErrors = {};
     if (!form.fullName.trim()) {
@@ -89,6 +113,8 @@ export function AddChildDialog() {
     }
     if (!form.birthDate.trim()) {
       nextErrors.birthDate = "Campo obligatorio";
+    } else if (!isValidDate(form.birthDate)) {
+      nextErrors.birthDate = "Fecha inválida";
     }
     if (!form.roomId) {
       nextErrors.roomId = "Campo obligatorio";
@@ -209,7 +235,7 @@ export function AddChildDialog() {
                 type="text"
                 placeholder="dd/mm/aaaa"
                 value={form.birthDate}
-                onChange={(e) => setForm({ ...form, birthDate: e.target.value })}
+                onChange={(e) => setForm({ ...form, birthDate: maskDate(e.target.value) })}
                 className="w-full px-[16px] py-[13px] rounded-[14px] border-[1.5px] border-[#eadfd0] bg-white text-[15px] text-ink"
               />
               {errors.birthDate && (
