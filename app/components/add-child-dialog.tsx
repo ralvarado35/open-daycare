@@ -146,7 +146,7 @@ export function AddChildDialog() {
 
       {/* Modal panel */}
       <div
-        className="fixed left-[50%] top-[40px] z-[51] -translate-x-1/2 w-full max-w-[520px] rounded-[24px] border border-[#ece0d0] bg-[#fbf4ec] shadow-[0_20px_50px_-24px_rgba(63,54,46,0.35)] flex flex-col overflow-hidden"
+        className="fixed left-[50%] top-[40px] z-[51] -translate-x-1/2 w-full max-w-[520px] mx-[4px] md:mx-0 rounded-[24px] border border-[#ece0d0] bg-[#fbf4ec] shadow-[0_20px_50px_-24px_rgba(63,54,46,0.35)] flex flex-col overflow-hidden"
         role="dialog"
         aria-modal="true"
         aria-label="Agregar niño"

@@ -23,6 +23,8 @@ export const newPostHref = placeholderHref;
 export const postDetailHref = placeholderHref;
 export const photoHref = placeholderHref;
 export const logoutHref = placeholderHref;
+// Trigger for the "Agregar niño" dialog (AddChildDialog). It does not navigate;
+// the dialog is opened client-side from the /kids header CTA.
 export const addChildHref = placeholderHref;
 export const editChildHref = placeholderHref;
 export const daySummaryHref = placeholderHref;
