@@ -1,6 +1,6 @@
 # SPEC 04 — Agregar niño: modal de alta
 
-> **Estado:** Implementado
+> **Estado:** Aprobado
 > **Depende de:** SPEC 02
 > **Fecha:** 2026-11-07
 > **Objetivo:** Implementar el modal "Agregar niño" de `references/pantallas/agregar-nino.dc.html` disparado desde el CTA "Agregar niño" del header de `/kids` (SPEC 02), con los campos obligatorios NOMBRE COMPLETO, FECHA DE NACIMIENTO y SALA (salas Soles, Luna y Estrellas hardcodeadas), validación de campos obligatorios al guardar y toast de confirmación, sin backend ni rutas nuevas.
@@ -73,17 +73,17 @@ No se crea módulo `lib/` nuevo: los datos van hardcodeados dentro del component
 
 ## Criterios de aceptación
 
-- [ ] `npm run lint` y `npm run build` pasan sin errores.
-- [ ] `/kids` a 1280px es visualmente idéntico al comp (incluye el CTA "Agregar niño" en el header).
-- [ ] Clic en "Agregar niño" abre el modal con la tarjeta del comp: título "Agregar niño", Cancelar, Guardar y los 5 campos con los placeholders del comp.
-- [ ] Al hacer clic en Guardar con los 3 obligatorios vacíos, aparece error debajo de cada uno, foco en el primero, y el modal permanece abierto.
-- [ ] Completando los 3 obligatorios y haciendo clic en Guardar: el modal se cierra, el formulario se limpia y aparece el toast "Niño agregado".
-- [ ] Cancelar cierra el modal sin toast y reseta el formulario (descarta).
-- [ ] El select de SALA muestra exactamente Soles, Luna y Estrellas, con Soles seleccionado inicialmente.
-- [ ] A <768px el modal se abre sin desbordes y es usable (ancho casi completo, campos legibles).
-- [ ] Los textos visibles están en español exactos del comp; el código interno está en inglés.
-- [ ] No hay dependencias nuevas ni rutas nuevas.
-- [ ] Sin errores en consola del navegador.
+- [x] `npm run lint` y `npm run build` pasan sin errores.
+- [x] `/kids` a 1280px es visualmente idéntico al comp (incluye el CTA "Agregar niño" en el header).
+- [x] Clic en "Agregar niño" abre el modal con la tarjeta del comp: título "Agregar niño", Cancelar, Guardar y los 5 campos con los placeholders del comp.
+- [x] Al hacer clic en Guardar con los 3 obligatorios vacíos, aparece error debajo de cada uno, foco en el primero, y el modal permanece abierto.
+- [x] Completando los 3 obligatorios y haciendo clic en Guardar: el modal se cierra, el formulario se limpia y aparece el toast "Niño agregado".
+- [x] Cancelar cierra el modal sin toast y reseta el formulario (descarta).
+- [x] El select de SALA muestra exactamente Soles, Luna y Estrellas, con Soles seleccionado inicialmente.
+- [x] A <768px el modal se abre sin desbordes y es usable (ancho casi completo, campos legibles).
+- [x] Los textos visibles están en español exactos del comp; el código interno está en inglés.
+- [x] No hay dependencias nuevas ni rutas nuevas.
+- [x] Sin errores en consola del navegador.
 
 ## Decisiones
 
