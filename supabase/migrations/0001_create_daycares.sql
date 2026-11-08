@@ -23,3 +23,10 @@ ON daycares
 FOR INSERT
 TO authenticated
 WITH CHECK (auth.uid() IS NOT NULL);
+
+-- Datos de ejemplo (seed) para la tabla daycares
+INSERT INTO daycares (name) VALUES
+  ('Guardería Sala Soles'),
+  ('Guardería Arcóiris'),
+  ('Guardería Semillitas'),
+  ('Guardería Estrellitas');

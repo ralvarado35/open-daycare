@@ -59,6 +59,10 @@ Open DayCare: reimplementación open source de una app de guardería. El scaffol
 - Supabase: servidor MCP en `https://mcp.supabase.com/mcp`. Úsalo para operaciones de base de datos, auth, storage, Edge Functions, migraciones, diagnósticos (logs) y gestión de proyectos. Requiere autenticación OAuth 2.1 o un token de acceso personal scoped en `Authorization: Bearer`. Ver `.mcp.json` en la raíz del proyecto.
 
 
+## Migraciones de base de datos
+
+Siempre que se manipule la base de datos (crear tablas, alterar columnas, insertar seed data, etc.), debe hacerse a través de un archivo de migración SQL en `supabase/migrations/`, siguiendo el patrón de Supabase CLI (nombre en `snake_case` con prefijo numérico, ej. `0001_create_daycares.sql`). No se realizan cambios directos en la base de datos remota sin una migración correspondiente. Cada migración se aplica al proyecto de Supabase vía Supabase MCP o dashboard SQL Editor, y se verifica con `npm run lint` + `npm run build`.
+
 ## Spec Driven Development - Skills y agente
 
 Skills instaladas (registradas en `skills-lock.json` y disponibles en `.agents/skills/`):

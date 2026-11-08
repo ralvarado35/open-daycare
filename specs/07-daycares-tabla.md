@@ -61,6 +61,17 @@ WITH CHECK (auth.uid() IS NOT NULL);
 
 Convenciones del esquema respetadas: PK `id` tipo `uuid` con `gen_random_uuid()`, `created_at` tipo `timestamptz`, nombres de tabla y columnas en inglés.
 
+## Datos de ejemplo (seed)
+
+Se insertaron 4 registros de ejemplo en la tabla `daycares` (solo el campo `name`, ya que la tabla no tiene columna de dirección):
+
+- Guardería Sala Soles
+- Guardería Arcóiris
+- Guardería Semillitas
+- Guardería Estrellitas
+
+Los INSERTs se agregaron al final del archivo `supabase/migrations/0001_create_daycares.sql` y se aplicaron al proyecto de Supabase.
+
 ## Plan de implementación
 
 1. Crear el directorio `supabase/migrations/` y el archivo `0001_create_daycares.sql` con el SQL del Data model. *Manual: el archivo existe y el SQL es sintácticamente válido para Postgres.*
@@ -69,13 +80,14 @@ Convenciones del esquema respetadas: PK `id` tipo `uuid` con `gen_random_uuid()`
 
 ## Criterios de aceptación
 
-- [ ] El archivo `supabase/migrations/0001_create_daycares.sql` existe.
-- [ ] La migración incluye `CREATE EXTENSION IF NOT EXISTS pgcrypto;`.
-- [ ] La tabla `daycares` tiene las columnas `id` (uuid PK, default `gen_random_uuid()`), `name` (text) y `created_at` (timestamptz), tal como el esquema de `@docs`.
-- [ ] RLS está habilitado en `daycares` (`ALTER TABLE ... ENABLE ROW LEVEL SECURITY`).
-- [ ] Existe una política `SELECT` para usuarios autenticados.
-- [ ] La migración se aplicó al proyecto de Supabase y la tabla `daycares` es consultable allí.
-- [ ] `npm run lint` y `npm run build` pasan sin errores.
+- [x] El archivo `supabase/migrations/0001_create_daycares.sql` existe.
+- [x] La migración incluye `CREATE EXTENSION IF NOT EXISTS pgcrypto;`.
+- [x] La tabla `daycares` tiene las columnas `id` (uuid PK, default `gen_random_uuid()`), `name` (text) y `created_at` (timestamptz), tal como el esquema de `@docs`.
+- [x] RLS está habilitado en `daycares` (`ALTER TABLE ... ENABLE ROW LEVEL SECURITY`).
+- [x] Existe una política `SELECT` para usuarios autenticados.
+- [x] La migración se aplicó al proyecto de Supabase y la tabla `daycares` es consultable allí.
+- [x] `npm run lint` y `npm run build` pasan sin errores.
+- [x] Se insertaron 4 registros de ejemplo en `daycares` (Guardería Sala Soles, Guardería Arcóiris, Guardería Semillitas, Guardería Estrellitas) y son consultables en Supabase.
 
 ## Decisiones
 
@@ -86,6 +98,7 @@ Convenciones del esquema respetadas: PK `id` tipo `uuid` con `gen_random_uuid()`
 - **No:** No se crea `lib/supabase.ts` en esta spec (respuesta del usuario; el cliente va en una spec posterior).
 - **No:** No se crean las demás tablas del esquema (`users`, `rooms`, ...) ni triggers de `auth.users`; cada una irá en su propia spec.
 - **Nota:** La política de escritura usa `auth.uid() IS NOT NULL` porque la tabla `users` (con el rol `staff`) aún no existe; la comprobación de rol se añadirá cuando se implemente la tabla `users`.
+- **Sí:** Se insertaron 4 registros de ejemplo (seed) en `daycares` solo con el campo `name`, pues la tabla no tiene columna de dirección (request del usuario).
 
 ## Riesgos
 
