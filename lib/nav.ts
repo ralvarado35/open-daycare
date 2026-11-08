@@ -19,6 +19,9 @@ export const navItems: NavItem[] = [
 ];
 
 // Routes for screens that do not exist yet in the app.
+// `newPostHref` stays as the placeholder "#" and does not navigate: it is the
+// trigger for the "Nueva publicación" client dialog (NewPostDialog), opened
+// from the sidebar CTA.
 export const newPostHref = placeholderHref;
 export const postDetailHref = placeholderHref;
 export const photoHref = placeholderHref;
