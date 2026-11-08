@@ -45,8 +45,17 @@ export function LinkParentDialog({
     email: "",
     relation: "mama",
   });
+  const [emailError, setEmailError] = useState(false);
 
   const firstName = childName.split(" ")[0];
+
+  // Valida formato básico de correo electrónico.
+  const isValidEmail = (value: string): boolean => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  };
+
+  // El botón CTA solo se activa cuando nombre y email están completos y el email es válido.
+  const isFormValid = form.fullName.trim().length > 0 && isValidEmail(form.email);
 
   // Close with Escape.
   useEffect(() => {
@@ -147,9 +156,21 @@ export function LinkParentDialog({
               type="email"
               placeholder="correo@ejemplo.com"
               value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className="w-full px-[16px] py-[13px] rounded-[14px] border-[1.5px] border-[#eadfd0] bg-white text-[15px] text-ink"
+              onChange={(e) => {
+                const value = e.target.value;
+                setForm({ ...form, email: value });
+                // Solo marca error si el usuario escribió algo y no es un email válido.
+                setEmailError(value.trim().length > 0 && !isValidEmail(value));
+              }}
+              className={`w-full px-[16px] py-[13px] rounded-[14px] border-[1.5px] bg-white text-[15px] text-ink ${
+                emailError ? "border-[#d9583c]" : "border-[#eadfd0]"
+              }`}
             />
+            {emailError && (
+              <p className="mt-[4px] text-[12px] font-bold text-[#d9583c]">
+                Correo inválido
+              </p>
+            )}
           </div>
 
           {/* PARENTESCO */}
@@ -190,14 +211,19 @@ export function LinkParentDialog({
             <div className="mt-[6px] text-[13px] text-[#a88526]">Vence en 7 días</div>
           </div>
 
-          {/* CTA "Enviar invitación" — placeholder muerto: no navega, no toast, no modifica nada */}
+          {/* CTA "Enviar invitación": solo activa cuando nombre y email son válidos.
+               Al hacer clic cierra el modal (simula envío de invitación, sin backend). */}
           <button
             type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              // Placeholder: no action (solo interfaces, sin backend).
+            disabled={!isFormValid}
+            onClick={() => {
+              onClose();
             }}
-            className="flex items-center justify-center gap-[9px] w-full rounded-[14px] px-0 py-[14px] bg-[linear-gradient(180deg,#f4977e,#ee8164)] text-[15.5px] font-extrabold text-white shadow-[0_10px_22px_-8px_rgba(238,129,100,0.7)]"
+            className={`flex items-center justify-center gap-[9px] w-full rounded-[14px] px-0 py-[14px] text-[15.5px] font-extrabold shadow-[0_10px_22px_-8px_rgba(238,129,100,0.7)] ${
+              isFormValid
+                ? "bg-[linear-gradient(180deg,#f4977e,#ee8164)] text-white cursor-pointer"
+                : "bg-[#f0e6d8] text-[#94887b] cursor-not-allowed"
+            }`}
           >
             <svg
               width={19}

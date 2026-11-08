@@ -117,12 +117,12 @@ export function KidProfileContent({
                       e.preventDefault();
                       setOpen(true);
                     }}
-                    className="flex items-center gap-3 pt-2"
+                    className="flex items-center gap-3 pt-2 cursor-pointer"
                   >
-                    <span className="flex h-10 w-10 flex-none items-center justify-center rounded-full border-[1.5px] border-dashed border-[#d8cbba] text-[#b0a290]">
+                    <span className="flex h-10 w-10 flex-none items-center justify-center rounded-full border-[1.5px] border-dashed border-[#d8cbba] text-[#b0a290] cursor-pointer">
                       <PlusIcon size={18} strokeWidth={2.2} />
                     </span>
-                    <span className="text-[14.5px] font-extrabold text-[#c5503a]">
+                    <span className="text-[14.5px] font-extrabold text-[#c5503a] cursor-pointer">
                       Vincular otro padre
                     </span>
                   </a>
