@@ -58,18 +58,18 @@ No se crea módulo `lib/` nuevo: el código y los valores se hardcodean en el co
 
 ## Criterios de aceptación
 
-- [ ] `npm run lint` y `npm run build` pasan sin errores.
-- [ ] El link "Vincular otro padre" en `/kids/[childId]` abre el modal en lugar de navegar a `#` (no hay navegación).
-- [ ] El modal renderiza la tarjeta del comp: encabezado "Vincular padre" + "a <Nombre del niño>", aviso de correo, campos NOMBRE DEL PADRE/MADRE, EMAIL, PARENTESCO (Mamá/Papá/Tutor/a), CÓDIGO DE INVITACIÓN `7K4P9` y CTA "Enviar invitación".
-- [ ] El código de invitación se muestra como texto fijo `7K4P9` (no editable), igual que el comp.
-- [ ] Al hacer clic en "Enviar invitación" no pasa nada (placeholder): no navega, no muestra toast, no modifica el perfil (regla "solo interfaces").
-- [ ] El modal se cierra con la flecha/X del header, con clic fuera (backdrop) y con la tecla Escape.
-- [ ] El nombre del niño se toma del perfil activo (`/kids/mateo-fernandez` → "a Mateo Fernández"; otro kid → su nombre).
-- [ ] A 1280px, screenshot del perfil con el modal abierto es visualmente idéntico al comp `vincular-padre.dc.html` (colores, radios, tipografías Fredoka/Nunito, sombras).
-- [ ] A <768px el modal se abre sin desbordes (ancho casi completo, campos legibles).
-- [ ] Los textos visibles están en español exactos del comp; el código interno está en inglés.
-- [ ] No hay rutas nuevas ni dependencias nuevas.
-- [ ] Sin errores en consola del navegador.
+- [x] `npm run lint` y `npm run build` pasan sin errores.
+- [x] El link "Vincular otro padre" en `/kids/[childId]` abre el modal en lugar de navegar a `#` (no hay navegación).
+- [x] El modal renderiza la tarjeta del comp: encabezado "Vincular padre" + "a <Nombre del niño>", aviso de correo, campos NOMBRE DEL PADRE/MADRE, EMAIL, PARENTESCO (Mamá/Papá/Tutor/a), CÓDIGO DE INVITACIÓN `7K4P9` y CTA "Enviar invitación".
+- [x] El código de invitación se muestra como texto fijo `7K4P9` (no editable), igual que el comp.
+- [x] Al hacer clic en "Enviar invitación" no pasa nada (placeholder): no navega, no muestra toast, no modifica el perfil (regla "solo interfaces").
+- [x] El modal se cierra con la flecha/X del header, con clic fuera (backdrop) y con la tecla Escape.
+- [x] El nombre del niño se toma del perfil activo (`/kids/mateo-fernandez` → "a Mateo Fernández"; otro kid → su nombre).
+- [x] A 1280px, screenshot del perfil con el modal abierto es visualmente idéntico al comp `vincular-padre.dc.html` (colores, radios, tipografías Fredoka/Nunito, sombras).
+- [x] A <768px el modal se abre sin desbordes (ancho casi completo, campos legibles).
+- [x] Los textos visibles están en español exactos del comp; el código interno está en inglés.
+- [x] No hay rutas nuevas ni dependencias nuevas.
+- [x] Sin errores en consola del navegador.
 
 ## Decisiones
 
