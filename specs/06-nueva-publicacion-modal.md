@@ -1,6 +1,6 @@
 # SPEC 06 — Nueva publicación: modal de creación
 
-> **Estado:** Aprobado
+> **Estado:** Implemented
 > **Depende de:** SPEC 01
 > **Fecha:** 2026-11-07
 > **Objetivo:** Implementar el modal "Nueva publicación" de `references/pantallas/crear-publicacion.dc.html` disparado desde el CTA "Nueva publicación" del sidebar, con PARA (múltiple, Mateo preseleccionado), TIPO (único, sin preselección), DESCRIPCIÓN (vacía) y FOTOS (1 miniatura + "Agregar" estático), cierre por Cancelar/backdrop/Escape y toast "Publicación creada" al publicar, sin backend ni rutas nuevas.
@@ -95,20 +95,20 @@ No se crea módulo `lib/` nuevo: los datos van hardcodeados dentro del component
 
 ## Criterios de aceptación
 
-- [ ] `npm run lint` y `npm run build` pasan sin errores.
-- [ ] El CTA "Nueva publicación" del sidebar abre el modal en lugar de navegar a `#` (no hay navegación).
-- [ ] El modal renderiza la tarjeta del comp: título "Nueva publicación", Cancelar, Publicar, sección PARA (Mateo preseleccionado, Sofía, Benjamín, Toda la sala), sección TIPO (7 tipos), DESCRIPCIÓN vacía con placeholder "Contá cómo le fue hoy…", FOTOS (1 miniatura + "Agregar" estático).
-- [ ] PARA es selección múltiple: tocar alterna selección; Mateo inicia seleccionado; "Toda la sala" es un destinatario más.
-- [ ] TIPO es selección única: elegir un tipo lo marca y desmarca el previo; ninguno inicia seleccionado.
-- [ ] Al publicar con DESCRIPCIÓN vacía: aparece error debajo del campo, foco en el textarea, y el modal permanece abierto.
-- [ ] Al publicar con DESCRIPCIÓN completa: el modal se cierra, el formulario se limpia y aparece el toast "Publicación creada".
-- [ ] Cancelar cierra el modal sin toast y reseta el formulario (descarta).
-- [ ] El modal se cierra con clic fuera (backdrop) y con la tecla Escape.
-- [ ] A 1280px, screenshot del sidebar con el modal abierto es visualmente idéntico al comp `crear-publicacion.dc.html` (colores, radios, tipografías Fredoka/Nunito, sombras).
-- [ ] A <768px el modal se abre sin desbordes (ancho casi completo, campos legibles).
-- [ ] Los textos visibles están en español exactos del comp; el código interno está en inglés.
-- [ ] No hay rutas nuevas ni dependencias nuevas.
-- [ ] Sin errores en consola del navegador.
+- [x] `npm run lint` y `npm run build` pasan sin errores.
+- [x] El CTA "Nueva publicación" del sidebar abre el modal en lugar de navegar a `#` (no hay navegación).
+- [x] El modal renderiza la tarjeta del comp: título "Nueva publicación", Cancelar, Publicar, sección PARA (Mateo preseleccionado, Sofía, Benjamín, Toda la sala), sección TIPO (7 tipos), DESCRIPCIÓN vacía con placeholder "Contá cómo le fue hoy…", FOTOS (1 miniatura + "Agregar" estático).
+- [x] PARA es selección múltiple: tocar alterna selección; Mateo inicia seleccionado; "Toda la sala" es un destinatario más (y es mutuamente excluyente con los niños individuales).
+- [x] TIPO es selección única: elegir un tipo lo marca y desmarca el previo; ninguno inicia seleccionado.
+- [x] Al publicar con DESCRIPCIÓN vacía: aparece error debajo del campo, foco en el textarea, y el modal permanece abierto.
+- [x] Al publicar con DESCRIPCIÓN completa: el modal se cierra, el formulario se limpia y aparece el toast "Publicación creada".
+- [x] Cancelar cierra el modal sin toast y reseta el formulario (descarta).
+- [x] El modal se cierra con clic fuera (backdrop) y con la tecla Escape.
+- [x] A 1280px, screenshot del sidebar con el modal abierto es visualmente idéntico al comp `crear-publicacion.dc.html` (colores, radios, tipografías Fredoka/Nunito, sombras).
+- [x] A <768px el modal se abre sin desbordes (ancho casi completo, campos legibles).
+- [x] Los textos visibles están en español exactos del comp; el código interno está en inglés.
+- [x] No hay rutas nuevas ni dependencias nuevas.
+- [x] Sin errores en consola del navegador.
 
 ## Decisiones
 

@@ -1,8 +1,12 @@
+"use client";
+
 import type { ComponentType } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import type { NavKey } from "@/lib/nav";
-import { logoutHref, navItems, newPostHref } from "@/lib/nav";
+import { logoutHref, navItems } from "@/lib/nav";
 import type { IconProps } from "./icons";
+import { NewPostDialog } from "./new-post-dialog";
 import {
   AccountIcon,
   ChildrenIcon,
@@ -35,6 +39,8 @@ type SidebarContentProps = {
  * desktop <Sidebar> and inside the mobile drawer.
  */
 export function SidebarContent({ active, onNavigate, onClose }: SidebarContentProps) {
+  const [newPostOpen, setNewPostOpen] = useState(false);
+
   return (
     <>
       <div className="flex items-center gap-[11px] px-2 pb-[22px] pt-1">
@@ -61,14 +67,14 @@ export function SidebarContent({ active, onNavigate, onClose }: SidebarContentPr
         ) : null}
       </div>
 
-      <Link
-        href={newPostHref}
-        onClick={onNavigate}
+      <button
+        type="button"
+        onClick={() => setNewPostOpen(true)}
         className="mb-[18px] flex w-full items-center justify-center gap-2 rounded-[14px] bg-[linear-gradient(180deg,#f4977e,#ee8164)] p-3 text-[14.5px] font-extrabold text-white shadow-[0_8px_18px_-8px_rgba(238,129,100,0.75)]"
       >
         <PlusIcon size={17} />
         Nueva publicación
-      </Link>
+      </button>
 
       <nav className="flex flex-1 flex-col gap-1">
         {navItems.map((item) => {
@@ -113,6 +119,8 @@ export function SidebarContent({ active, onNavigate, onClose }: SidebarContentPr
           </Link>
         </div>
       </div>
+
+      <NewPostDialog open={newPostOpen} onClose={() => setNewPostOpen(false)} />
     </>
   );
 }
