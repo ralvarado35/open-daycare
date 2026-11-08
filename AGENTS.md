@@ -74,6 +74,8 @@ Skills instaladas (registradas en `skills-lock.json` y disponibles en `.agents/s
 - `/spec` — crear las especificaciones.
 - `/spec-impl` — usar esta skill para hacer las implementaciones.
 - `/verify-spec` — comando (`.opencode/commands/verify-spec.md`) para verificar los criterios de aceptación de un spec: se delega en el agente verificador y acepta la ruta del spec como argumento (ej. `/verify-spec specs/02-ninos.md`); sin argumento revisa todos los specs de `specs/*.md`.
+- Especs de base de datos: cualquier archivo de especificación que tenga que ver con la base de datos (tablas, esquemas, consultas, migraciones complementarias, etc.) debe ir en la carpeta `spec/database/`.
+
 
 ## Agente spec-verifier
 
