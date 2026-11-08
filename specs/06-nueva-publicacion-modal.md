@@ -1,6 +1,6 @@
 # SPEC 06 — Nueva publicación: modal de creación
 
-> **Estado:** Draft
+> **Estado:** Aprobado
 > **Depende de:** SPEC 01
 > **Fecha:** 2026-11-07
 > **Objetivo:** Implementar el modal "Nueva publicación" de `references/pantallas/crear-publicacion.dc.html` disparado desde el CTA "Nueva publicación" del sidebar, con PARA (múltiple, Mateo preseleccionado), TIPO (único, sin preselección), DESCRIPCIÓN (vacía) y FOTOS (1 miniatura + "Agregar" estático), cierre por Cancelar/backdrop/Escape y toast "Publicación creada" al publicar, sin backend ni rutas nuevas.
