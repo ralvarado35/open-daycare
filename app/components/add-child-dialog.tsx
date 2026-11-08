@@ -106,7 +106,10 @@ export function AddChildDialog() {
     );
   };
 
-  const validate = (): boolean => {
+  // Valida los campos obligatorios y devuelve los errores detectados (null si es válido).
+  // El foco se basa en el objeto local `nextErrors` para no depender del estado
+  // de React (setErrors es asíncrono y `errors` aún no se habría actualizado).
+  const validate = (): FormErrors | null => {
     const nextErrors: FormErrors = {};
     if (!form.fullName.trim()) {
       nextErrors.fullName = "Campo obligatorio";
@@ -120,22 +123,23 @@ export function AddChildDialog() {
       nextErrors.roomId = "Campo obligatorio";
     }
     setErrors(nextErrors);
-    return Object.keys(nextErrors).length === 0;
+    return Object.keys(nextErrors).length === 0 ? null : nextErrors;
   };
 
-  const focusFirstError = () => {
-    if (errors.fullName && firstNameRef.current) {
+  const focusFirstError = (nextErrors: FormErrors) => {
+    if (nextErrors.fullName && firstNameRef.current) {
       firstNameRef.current.focus();
-    } else if (errors.birthDate && birthDateRef.current) {
+    } else if (nextErrors.birthDate && birthDateRef.current) {
       birthDateRef.current.focus();
-    } else if (errors.roomId && roomRef.current) {
+    } else if (nextErrors.roomId && roomRef.current) {
       roomRef.current.focus();
     }
   };
 
   const handleSave = () => {
-    if (!validate()) {
-      focusFirstError();
+    const nextErrors = validate();
+    if (nextErrors) {
+      focusFirstError(nextErrors);
       return;
     }
     setShowToast(true);
