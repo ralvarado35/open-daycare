@@ -28,6 +28,8 @@ export const logoutHref = placeholderHref;
 export const addChildHref = placeholderHref;
 export const editChildHref = placeholderHref;
 export const daySummaryHref = placeholderHref;
+// Trigger for the "Vincular padre" dialog (LinkParentDialog). It does not
+// navigate; the dialog is opened client-side from /kids/[childId].
 export const linkParentHref = placeholderHref;
 
 // Auth routes.

@@ -1,6 +1,6 @@
 # SPEC 04 — Agregar niño: modal de alta
 
-> **Estado:** Aprobado
+> **Estado:** Implementado
 > **Depende de:** SPEC 02
 > **Fecha:** 2026-11-07
 > **Objetivo:** Implementar el modal "Agregar niño" de `references/pantallas/agregar-nino.dc.html` disparado desde el CTA "Agregar niño" del header de `/kids` (SPEC 02), con los campos obligatorios NOMBRE COMPLETO, FECHA DE NACIMIENTO y SALA (salas Soles, Luna y Estrellas hardcodeadas), validación de campos obligatorios al guardar y toast de confirmación, sin backend ni rutas nuevas.
