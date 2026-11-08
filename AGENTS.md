@@ -56,12 +56,20 @@ Open DayCare: reimplementación open source de una app de guardería. El scaffol
 
 - Playwright: los screenshots y cualquier cosa relacionada con Playwright tienen que estar en la carpeta `.playwright-mcp` (está en .gitignore).
 - Context7: usar este MCP para traer la documentación actualizada del framework.
+- Supabase: servidor MCP en `https://mcp.supabase.com/mcp`. Úsalo para operaciones de base de datos, auth, storage, Edge Functions, migraciones, diagnósticos (logs) y gestión de proyectos. Requiere autenticación OAuth 2.1 o un token de acceso personal scoped en `Authorization: Bearer`. Ver `.mcp.json` en la raíz del proyecto.
 
 
 ## Spec Driven Development - Skills y agente
-- /spec Usaremos esta habiliadad para crear las especificicaciones
-- /spec-impl Usaremos esta skill para hacer las implementaciones
-- /verify-spec Usaremos este comando (`.opencode/commands/verify-spec.md`) para verificar los criterios de aceptación de un spec: se delega en el agente verificador y acepta la ruta del spec como argumento (ej. `/verify-spec specs/02-ninos.md`); sin argumento revisa todos los specs de `specs/*.md`.
+
+Skills instaladas (registradas en `skills-lock.json` y disponibles en `.agents/skills/`):
+
+- `spec` (fuente: `klerith/fernando-skills`) — para crear especificaciones de funcionalidades. Comando `/spec`.
+- `spec-impl` (fuente: `klerith/fernando-skills`) — para implementar a partir de una especificación. Comando `/spec-impl`.
+- `supabase` (fuente: `supabase/agent-skills`, versión 0.1.2) — usar para CUALQUIER tarea que involucre Supabase: base de datos, Auth, Edge Functions, Realtime, Storage, Vectors, Cron, Queues; integraciones de cliente y SSR (`supabase-js`, `@supabase/ssr`) en Next.js; problemas de auth (sesiones, JWT, cookies, RLS); Supabase CLI o MCP server; cambios de esquema, migraciones, esquemas declarativos, auditorías de seguridad; depuración de errores de Supabase (HTTP, Postgres, PostgREST, RLS, storage, Edge Functions, logs). Guía detallada en `.agents/skills/supabase/SKILL.md`.
+
+- `/spec` — crear las especificaciones.
+- `/spec-impl` — usar esta skill para hacer las implementaciones.
+- `/verify-spec` — comando (`.opencode/commands/verify-spec.md`) para verificar los criterios de aceptación de un spec: se delega en el agente verificador y acepta la ruta del spec como argumento (ej. `/verify-spec specs/02-ninos.md`); sin argumento revisa todos los specs de `specs/*.md`.
 
 ## Agente spec-verifier
 
