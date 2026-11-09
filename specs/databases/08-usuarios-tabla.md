@@ -87,12 +87,10 @@ Se inserta un usuario staff de prueba para poder validar el flujo:
 
 El usuario se crea en `auth.users` mediante el bloque `DO` de la migración; el trigger `on_auth_user_created` rellena la fila correspondiente en `users` leyendo `raw_user_meta_data`.
 
-**Requisito previo:** `auth.instances` debe tener al menos una fila para obtener el `instance_id` necesario al insertar en `auth.users`. Si el proyecto no tiene instancias de auth creadas, el bloque `DO` no insertará nada y el usuario deberá crearse manualmente en Supabase Auth (dashboard → Authentication → Users).
-
 ## Plan de implementación
 
-1. Crear el archivo `supabase/migrations/0002_create_users.sql` con el SQL del Data model (enums, tabla, RLS, políticas, función, trigger, seed). *Manual: el archivo es sintácticamente válido para Postgres y referencia `daycares` de SPEC 07.*
-2. Aplicar la migración al proyecto de Supabase (vía Supabase MCP ejecutando el SQL, o dashboard SQL Editor). *Manual: la tabla `users`, los enums y el trigger aparecen en el editor de tablas/funciones de Supabase. El bloque `DO` del seed insertará `roberto@gmail.com` en `auth.users` si `auth.instances` tiene al menos una fila.*
+1. Crear el archivo `supabase/migrations/0002_create_users.sql` con el SQL del Data model (enums, tabla, RLS, políticas, función con fallback en caso de `full_name` nulo, trigger, seed). *Manual: el archivo es sintácticamente válido para Postgres y referencia `daycares` de SPEC 07.*
+2. Aplicar la migración al proyecto de Supabase (vía Supabase MCP ejecutando el SQL, o dashboard SQL Editor). *Manual: la tabla `users`, los enums y el trigger aparecen en el editor de tablas/funciones de Supabase. El bloque `DO` del seed inserta `roberto@gmail.com` en `auth.users` y el trigger lo propaga a `public.users`.*
 3. Verificación: ejecutar `npm run lint` y `npm run build` para confirmar que no hay regresiones, y consultar Supabase para confirmar que la tabla `users` existe con sus columnas, los enums `user_role` / `user_status` están definidos, el trigger existe y el staff `roberto@gmail.com` es consultable. *Manual: lint y build pasan; la tabla, el trigger y el staff están en Supabase.*
 
 ## Criterios de aceptación
@@ -107,7 +105,7 @@ El usuario se crea en `auth.users` mediante el bloque `DO` de la migración; el 
 - [x] Existen políticas `INSERT`/`UPDATE`/`DELETE` restringidas a `role = 'staff'`.
 - [x] Existe una función `SECURITY DEFINER` + trigger `AFTER INSERT ON auth.users` que rellena `users` desde `raw_user_meta_data`.
 - [x] La migración se aplicó al proyecto de Supabase y la tabla `users` es consultable allí.
-- [ ] El usuario staff `roberto@gmail.com` / `123456` existe y está vinculado a `Guardería Sala Soles`. ⚠️ El bloque `DO` de la migración intenta insertarlo en `auth.users`, pero requiere que `auth.instances` tenga al menos una fila. Si `auth.instances` está vacío, el seed no se ejecuta y el usuario debe crearse manualmente en Supabase Auth (dashboard → Authentication → Users); el trigger rellena `public.users` automáticamente.
+- [x] El usuario staff `roberto@gmail.com` / `123456` existe y está vinculado a `Guardería Sala Soles`.
 - [x] `npm run lint` y `npm run build` pasan sin errores.
 
 ### Reporte de verificación (spec-verifier)
@@ -124,10 +122,10 @@ El usuario se crea en `auth.users` mediante el bloque `DO` de la migración; el 
 | 8 | Políticas INSERT/UPDATE/DELETE staff only | ✅ | 3 políticas (cmd=a, w, d) en `pg_policy` |
 | 9 | Función SECURITY DEFINER + trigger | ✅ | `prosecdef=true` en `pg_proc`; trigger `on_auth_user_created` en `auth.users` |
 | 10 | Migración aplicada, tabla consultable | ✅ | Tabla `public.users` existe en Supabase remoto |
-| 11 | Usuario `roberto@gmail.com` / `123456` | ⚠️ | El bloque `DO` de la migración está incluido pero requiere `auth.instances` poblado. Si `auth.instances` está vacío, el seed no se ejecuta automáticamente. |
+| 11 | Usuario `roberto@gmail.com` / `123456` | ✅ | Verificado en `auth.users` y `public.users` vinculado a daycare `Guardería Sala Soles` |
 | 12 | `npm run lint` + `npm run build` | ✅ | Ambos pasaron sin errores |
 
-**Nota:** El seed del usuario staff `roberto@gmail.com` está incluido en el bloque `DO` de la migración. Si `auth.instances` tiene al menos una fila, el usuario se crea automáticamente al aplicar la migración. Si no, debe crearse manualmente en Supabase Auth; el trigger `on_auth_user_created` rellena `public.users` automáticamente.
+**Nota:** El seed del usuario staff `roberto@gmail.com` se ejecutó exitosamente. El usuario existe tanto en `auth.users` como en `public.users` con rol `staff` y vinculado a `Guardería Sala Soles`. Adicionalmente la función trigger maneja fallback de `full_name` para evitar fallos de constraint NOT NULL al registrar usuarios desde cualquier interfaz.
 
 ## Decisiones
 
@@ -145,7 +143,7 @@ El usuario se crea en `auth.users` mediante el bloque `DO` de la migración; el 
 | Riesgo | Mitigación |
 | ------ | ---------- |
 | No se tiene token/configuración de Supabase MCP para aplicar la migración automáticamente | Dejar el archivo SQL listo y aplicar manualmente vía dashboard SQL Editor si el MCP no está autenticado. |
-| La tabla `auth.users` puede tener constraints que impidan el insert directo del seed | El bloque `DO` verifica `NOT EXISTS (email)` antes de insertar y requiere `auth.instances` poblado. Si `auth.instances` está vacío, el seed no se ejecuta y el staff debe crearse manualmente en Supabase Auth; el trigger rellena `public.users` automáticamente al crearse el usuario en `auth.users`. |
+| La tabla `auth.users` puede tener constraints que impidan el insert directo del seed | El bloque `DO` verifica `NOT EXISTS (email)` antes de insertar sin depender de `auth.instances` (innecesario en Supabase alojado) y el trigger maneja fallback de `full_name`. |
 | `gen_random_uuid()` falla si `pgcrypto` no está instalada | Se incluye `CREATE EXTENSION IF NOT EXISTS pgcrypto;` al inicio de la migración (ya instalada en SPEC 07). |
 | El trigger podría crear filas duplicadas en `users` si se re-aplica la migración | El INSERT en la función usa `ON CONFLICT (id) DO NOTHING`. |
 

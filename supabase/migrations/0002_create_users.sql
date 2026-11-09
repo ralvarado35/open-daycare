@@ -116,7 +116,7 @@ BEGIN
     v_daycare_id,
     COALESCE(v_role, 'parent'),
     'active',
-    NEW.raw_user_meta_data->>'full_name',
+    COALESCE(NEW.raw_user_meta_data->>'full_name', split_part(NEW.email, '@', 1), 'Usuario'),
     now(),
     now()
   )
@@ -134,21 +134,16 @@ EXECUTE FUNCTION public.handle_new_user();
 
 -- 8. Seed: usuario staff de prueba (roberto@gmail.com / 123456) en Guardería Sala Soles.
 -- Se crea en auth.users; el trigger (punto 7) rellena la fila en users.
--- Requiere que auth.instances tenga al menos una fila (el instance_id se obtiene dinámicamente).
 DO $$
 DECLARE
   v_daycare_id uuid;
   v_user_id uuid := gen_random_uuid();
-  v_instance_id uuid;
 BEGIN
-  SELECT id INTO v_instance_id FROM auth.instances LIMIT 1;
   SELECT id INTO v_daycare_id FROM daycares WHERE name = 'Guardería Sala Soles' LIMIT 1;
 
-  IF v_instance_id IS NOT NULL
-     AND v_daycare_id IS NOT NULL
+  IF v_daycare_id IS NOT NULL
      AND NOT EXISTS (SELECT 1 FROM auth.users WHERE email = 'roberto@gmail.com') THEN
     INSERT INTO auth.users (
-      instance_id,
       id,
       aud,
       role,
@@ -160,7 +155,6 @@ BEGIN
       created_at,
       updated_at
     ) VALUES (
-      v_instance_id,
       v_user_id,
       'authenticated',
       'authenticated',
