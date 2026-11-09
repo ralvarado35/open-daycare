@@ -134,14 +134,18 @@ EXECUTE FUNCTION public.handle_new_user();
 
 -- 8. Seed: usuario staff de prueba (roberto@gmail.com / 123456) en Guardería Sala Soles.
 -- Se crea en auth.users; el trigger (punto 7) rellena la fila en users.
+-- El instance_id se obtiene dinámicamente de auth.instances (no hardcodeado).
 DO $$
 DECLARE
   v_daycare_id uuid;
   v_user_id uuid := gen_random_uuid();
+  v_instance_id uuid;
 BEGIN
+  SELECT id INTO v_instance_id FROM auth.instances LIMIT 1;
   SELECT id INTO v_daycare_id FROM daycares WHERE name = 'Guardería Sala Soles' LIMIT 1;
 
-  IF v_daycare_id IS NOT NULL
+  IF v_instance_id IS NOT NULL
+     AND v_daycare_id IS NOT NULL
      AND NOT EXISTS (SELECT 1 FROM auth.users WHERE email = 'roberto@gmail.com') THEN
     INSERT INTO auth.users (
       instance_id,
@@ -156,7 +160,7 @@ BEGIN
       created_at,
       updated_at
     ) VALUES (
-      '00000000-0000-0000-0000-0000-000000000000',
+      v_instance_id,
       v_user_id,
       'authenticated',
       'authenticated',

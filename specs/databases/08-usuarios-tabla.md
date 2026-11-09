@@ -95,18 +95,37 @@ El usuario se crea en `auth.users`; el trigger `on_auth_user_created` rellena la
 
 ## Criterios de aceptación
 
-- [ ] El archivo `supabase/migrations/0002_create_users.sql` existe.
-- [ ] La migración incluye `CREATE EXTENSION IF NOT EXISTS pgcrypto;`.
-- [ ] Se definen los enums `user_role` (`staff`, `parent`, `admin`) y `user_status` (`pending`, `active`).
-- [ ] La tabla `users` tiene las columnas `id` (uuid PK, default `gen_random_uuid()`), `daycare_id` (uuid FK → `daycares`), `role` (`user_role`), `status` (`user_status`, default `active`), `full_name` (text), `avatar_url` (text, nullable), `notify_on_post` (boolean default `true`), `daily_summary_enabled` (boolean default `true`), `created_at` / `updated_at` (timestamptz), tal como el esquema de `@db-schema`.
-- [ ] RLS está habilitado en `users` (`ALTER TABLE ... ENABLE ROW LEVEL SECURITY`).
-- [ ] Existe una política `SELECT` para que cada usuario lea su propia fila (`auth.uid() = id`).
-- [ ] Existe una política `SELECT` para que el staff lea los usuarios de su daycare.
-- [ ] Existen políticas `INSERT`/`UPDATE`/`DELETE` restringidas a `role = 'staff'`.
-- [ ] Existe una función `SECURITY DEFINER` + trigger `AFTER INSERT ON auth.users` que rellena `users` desde `raw_user_meta_data`.
-- [ ] La migración se aplicó al proyecto de Supabase y la tabla `users` es consultable allí.
-- [ ] El usuario staff `roberto@gmail.com` / `123456` existe y está vinculado a `Guardería Sala Soles`.
-- [ ] `npm run lint` y `npm run build` pasan sin errores.
+- [x] El archivo `supabase/migrations/0002_create_users.sql` existe.
+- [x] La migración incluye `CREATE EXTENSION IF NOT EXISTS pgcrypto;`.
+- [x] Se definen los enums `user_role` (`staff`, `parent`, `admin`) y `user_status` (`pending`, `active`).
+- [x] La tabla `users` tiene las columnas `id` (uuid PK, default `gen_random_uuid()`), `daycare_id` (uuid FK → `daycares`), `role` (`user_role`), `status` (`user_status`, default `active`), `full_name` (text), `avatar_url` (text, nullable), `notify_on_post` (boolean default `true`), `daily_summary_enabled` (boolean default `true`), `created_at` / `updated_at` (timestamptz), tal como el esquema de `@db-schema`.
+- [x] RLS está habilitado en `users` (`ALTER TABLE ... ENABLE ROW LEVEL SECURITY`).
+- [x] Existe una política `SELECT` para que cada usuario lea su propia fila (`auth.uid() = id`).
+- [x] Existe una política `SELECT` para que el staff lea los usuarios de su daycare.
+- [x] Existen políticas `INSERT`/`UPDATE`/`DELETE` restringidas a `role = 'staff'`.
+- [x] Existe una función `SECURITY DEFINER` + trigger `AFTER INSERT ON auth.users` que rellena `users` desde `raw_user_meta_data`.
+- [x] La migración se aplicó al proyecto de Supabase y la tabla `users` es consultable allí.
+- [ ] El usuario staff `roberto@gmail.com` / `123456` existe y está vinculado a `Guardería Sala Soles`. ⚠️ No existe en `auth.users` ni en `public.users`: `auth.instances` está vacío, por lo que el bloque DO del seed no pudo insertar. Requiere crear el usuario manualmente en Supabase Auth (dashboard → Authentication → Users); el trigger rellena `public.users` automáticamente.
+- [x] `npm run lint` y `npm run build` pasan sin errores.
+
+### Reporte de verificación (spec-verifier)
+
+| # | Criterio | Veredicto | Evidencia |
+|---|----------|-----------|-----------|
+| 1 | Archivo `0002_create_users.sql` existe | ✅ | Leído, 180 líneas, en `supabase/migrations/` |
+| 2 | `CREATE EXTENSION IF NOT EXISTS pgcrypto;` | ✅ | Línea 6 del archivo SQL |
+| 3 | Enums `user_role` / `user_status` | ✅ | Ambos existen en `pg_type` del proyecto remoto |
+| 4 | Tabla `users` con todas las columnas | ✅ | 10 columnas verificadas en `information_schema.columns` |
+| 5 | RLS habilitado | ✅ | `relrowsecurity = true` en `pg_class` |
+| 6 | Política SELECT propia fila | ✅ | `users read own profile` (cmd=r) en `pg_policy` |
+| 7 | Política SELECT staff daycare | ✅ | `users read staff daycare` (cmd=r) en `pg_policy` |
+| 8 | Políticas INSERT/UPDATE/DELETE staff only | ✅ | 3 políticas (cmd=a, w, d) en `pg_policy` |
+| 9 | Función SECURITY DEFINER + trigger | ✅ | `prosecdef=true` en `pg_proc`; trigger `on_auth_user_created` en `auth.users` |
+| 10 | Migración aplicada, tabla consultable | ✅ | Tabla `public.users` existe en Supabase remoto |
+| 11 | Usuario `roberto@gmail.com` / `123456` | ⚠️ | No existe en `auth.users` (count=0) ni `public.users` (total=0). `auth.instances` vacío impide el bloque DO del seed. |
+| 12 | `npm run lint` + `npm run build` | ✅ | Ambos pasaron sin errores |
+
+**Pendiente:** Crear el usuario `roberto@gmail.com` / `123456` manualmente en Supabase Auth (dashboard). Una vez creado, el trigger `on_auth_user_created` rellenará `public.users` con rol `staff` y daycare "Guardería Sala Soles".
 
 ## Decisiones
 
