@@ -134,7 +134,7 @@ EXECUTE FUNCTION public.handle_new_user();
 
 -- 8. Seed: usuario staff de prueba (roberto@gmail.com / 123456) en Guardería Sala Soles.
 -- Se crea en auth.users; el trigger (punto 7) rellena la fila en users.
--- El instance_id se obtiene dinámicamente de auth.instances (no hardcodeado).
+-- Requiere que auth.instances tenga al menos una fila (el instance_id se obtiene dinámicamente).
 DO $$
 DECLARE
   v_daycare_id uuid;
@@ -178,3 +178,5 @@ BEGIN
     );
   END IF;
 END $$;
+
+
