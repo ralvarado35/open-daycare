@@ -58,6 +58,26 @@ Open DayCare: reimplementación open source de una app de guardería. El scaffol
 - Context7: usar este MCP para traer la documentación actualizada del framework.
 - Supabase: servidor MCP en `https://mcp.supabase.com/mcp`. Úsalo para operaciones de base de datos, auth, storage, Edge Functions, migraciones, diagnósticos (logs) y gestión de proyectos. Requiere autenticación OAuth 2.1 o un token de acceso personal scoped en `Authorization: Bearer`. Ver `.mcp.json` en la raíz del proyecto.
 
+## Supabase + Next.js (acceso a base de datos)
+
+La app usa los paquetes oficiales de Supabase para consultar y mutar la base de datos desde Next.js:
+
+- `@supabase/supabase-js` — cliente de Supabase (querys, auth, storage, etc.).
+- `@supabase/ssr` — helpers de cliente para Server Components, Browser Components y middleware.
+
+Archivos creados en `utils/supabase/`:
+
+- `server.ts` — `createClient(cookieStore)` para Server Components (usa `createServerClient`).
+- `client.ts` — `createClient()` para Browser Components (usa `createBrowserClient`).
+- `middleware.ts` — `createClient(request)` helper para renovar sesiones de auth en cada request.
+
+Las variables de entorno viven en `.env.local` (no se commitea, está en `.gitignore` bajo `.env*`):
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+
+Uso recomendado: importar `createClient` desde `@/utils/supabase/server` en Server Components y desde `@/utils/supabase/client` en componentes cliente. No consultes la base de datos directamente desde el navegador sin pasar por estos clientes.
+
 
 ## Migraciones de base de datos
 
