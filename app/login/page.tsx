@@ -1,14 +1,39 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
+import { signIn } from "./actions";
 import { SunIcon } from "@/app/components/icons";
 import { activateAccountHref, forgotPasswordHref } from "@/lib/nav";
 
 /**
- * Login screen. Static server component without JavaScript, standalone
- * full-screen (no Sidebar / MobileNav / guard), mirroring the reference
- * comp (references/pantallas/login.dc.html) at 1280px. The Personal/Familia
- * toggle is intentionally omitted (SPEC 03).
+ * Login screen. Client component that submits email + password to the
+ * `signIn` Server Action against Supabase Auth. On success it redirects to
+ * `/`; on failure it shows an on-screen error message.
+ *
+ * Mirrors the reference comp (references/pantallas/login.dc.html) at 1280px:
+ * gradient brand panel (left) + form side (right), EMAIL / CONTRASEÑA labels,
+ * "Iniciar sesión" CTA, "¿Olvidaste tu contraseña?" and "Activá tu cuenta"
+ * links. The Personal/Familia toggle is intentionally omitted (SPEC 03).
  */
 export default function LoginPage() {
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError(null);
+
+    const formData = new FormData(event.currentTarget);
+    const result = await signIn(formData);
+
+    // `signIn` calls `redirect("/")` on success (navigation happens
+    // automatically, so we never reach here). On failure it returns
+    // `{ error }`, which we show on screen.
+    if (result && typeof result === "object" && "error" in result) {
+      setError(String((result as { error: string }).error));
+    }
+  }
+
   return (
     <div className="grid min-h-dvh grid-cols-1 bg-cream md:grid-cols-[1.05fr_1fr]">
       {/* Brand panel: gradient + logo + headline */}
@@ -52,59 +77,71 @@ export default function LoginPage() {
             Ingresá para ver el día de hoy.
           </p>
 
-          <label
-            htmlFor="login-email"
-            className="mb-[8px] block text-[12px] font-bold tracking-[0.7px] text-ink-soft"
-          >
-            EMAIL
-          </label>
-          <input
-            id="login-email"
-            type="email"
-            defaultValue="caro@opendaycare.com"
-            autoComplete="email"
-            className="mb-[18px] w-full rounded-[14px] border border-line bg-white px-4 py-[14px] text-[15px] text-ink outline-none"
-          />
-
-          <label
-            htmlFor="login-password"
-            className="mb-[8px] block text-[12px] font-bold tracking-[0.7px] text-ink-soft"
-          >
-            CONTRASEÑA
-          </label>
-          <input
-            id="login-password"
-            type="password"
-            placeholder="••••••••"
-            autoComplete="current-password"
-            className="mb-[10px] w-full rounded-[14px] border border-line bg-white px-4 py-[14px] text-[15px] text-ink outline-none placeholder:text-[#b6a99b]"
-          />
-
-          <div className="mb-[20px] text-right">
-            <Link
-              href={forgotPasswordHref}
-              className="text-[13.5px] font-bold text-[#c5503a]"
+          <form onSubmit={handleSubmit}>
+            <label
+              htmlFor="login-email"
+              className="mb-[8px] block text-[12px] font-bold tracking-[0.7px] text-ink-soft"
             >
-              ¿Olvidaste tu contraseña?
-            </Link>
-          </div>
+              EMAIL
+            </label>
+            <input
+              id="login-email"
+              name="email"
+              type="email"
+              defaultValue="caro@opendaycare.com"
+              autoComplete="email"
+              required
+              className="mb-[18px] w-full rounded-[14px] border border-line bg-white px-4 py-[14px] text-[15px] text-ink outline-none"
+            />
 
-          <Link
-            href="/"
-            className="block w-full rounded-[15px] bg-[linear-gradient(180deg,#f4977e,#ee8164)] py-[15px] text-center text-[16px] font-extrabold text-white shadow-[0_10px_22px_-8px_rgba(238,129,100,0.7)]"
-          >
-            Iniciar sesión
-          </Link>
-
-          <p className="mt-[24px] text-center text-[14.5px] text-ink-soft">
-            ¿Te invitó la guardería?{" "}
-            <Link
-              href={activateAccountHref}
-              className="font-extrabold text-[#c5503a]"
+            <label
+              htmlFor="login-password"
+              className="mb-[8px] block text-[12px] font-bold tracking-[0.7px] text-ink-soft"
             >
-              Activá tu cuenta
-            </Link>
-          </p>
+              CONTRASEÑA
+            </label>
+            <input
+              id="login-password"
+              name="password"
+              type="password"
+              placeholder="••••••••"
+              autoComplete="current-password"
+              required
+              className="mb-[10px] w-full rounded-[14px] border border-line bg-white px-4 py-[14px] text-[15px] text-ink outline-none placeholder:text-[#b6a99b]"
+            />
+
+            {error && (
+              <p className="mb-[12px] text-[12.5px] text-center text-[#c5503a]">
+                {error}
+              </p>
+            )}
+
+            <div className="mb-[20px] text-right">
+              <Link
+                href={forgotPasswordHref}
+                className="text-[13.5px] font-bold text-[#c5503a]"
+              >
+                ¿Olvidaste tu contraseña?
+              </Link>
+            </div>
+
+            <button
+              type="submit"
+              className="block w-full rounded-[15px] bg-[linear-gradient(180deg,#f4977e,#ee8164)] py-[15px] text-center text-[16px] font-extrabold text-white shadow-[0_10px_22px_-8px_rgba(238,129,100,0.7)]"
+            >
+              Iniciar sesión
+            </button>
+
+            <p className="mt-[24px] text-center text-[14.5px] text-ink-soft">
+              ¿Te invitó la guardería?{" "}
+              <Link
+                href={activateAccountHref}
+                className="font-extrabold text-[#c5503a]"
+              >
+                Activá tu cuenta
+              </Link>
+            </p>
+          </form>
         </div>
       </section>
     </div>
