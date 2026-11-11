@@ -144,29 +144,59 @@ BEGIN
   IF v_daycare_id IS NOT NULL
      AND NOT EXISTS (SELECT 1 FROM auth.users WHERE email = 'roberto@gmail.com') THEN
     INSERT INTO auth.users (
+      instance_id,
       id,
       aud,
       role,
       email,
       encrypted_password,
       email_confirmed_at,
+      confirmation_token,
+      recovery_token,
+      email_change_token_new,
+      email_change,
       raw_app_meta_data,
       raw_user_meta_data,
       created_at,
       updated_at
     ) VALUES (
+      '00000000-0000-0000-0000-000000000000',
       v_user_id,
       'authenticated',
       'authenticated',
       'roberto@gmail.com',
       crypt('123456', gen_salt('bf')),
       now(),
+      '',
+      '',
+      '',
+      '',
       '{"provider": "email", "providers": ["email"]}',
       jsonb_build_object(
         'daycare_id', v_daycare_id::text,
         'role', 'staff',
         'full_name', 'Roberto Staff'
       ),
+      now(),
+      now()
+    );
+
+    INSERT INTO auth.identities (
+      id,
+      user_id,
+      identity_data,
+      provider,
+      provider_id,
+      last_sign_in_at,
+      created_at,
+      updated_at
+    ) VALUES (
+      v_user_id,
+      v_user_id,
+      jsonb_build_object('sub', v_user_id::text, 'email', 'roberto@gmail.com'),
+      'email',
+      v_user_id::text,
+      now(),
       now(),
       now()
     );
