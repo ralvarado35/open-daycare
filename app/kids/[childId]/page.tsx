@@ -4,21 +4,15 @@ import { ChevronLeftIcon } from "@/app/components/icons";
 import { KidProfileContent } from "@/app/kids/[childId]/kid-profile-content";
 import { MobileNav } from "@/app/components/mobile-nav";
 import { Sidebar } from "@/app/components/sidebar";
-import { kids } from "@/lib/kids-data";
-
-// Pre-render every kid profile at build time from the mock data, mirroring the
-// reference comp (references/pantallas/perfil-nino.dc.html).
-export async function generateStaticParams() {
-  return kids.map((kid) => ({ childId: kid.id }));
-}
 
 /**
- * Kid profile page. The kid-independent chrome (sidebar, top bar, container)
- * forms the static shell; the kid-dependent content lives inside a <Suspense>
+ * Kid profile page (SPEC 09). Fully dynamic: children live in Supabase, so
+ * there is no stable list to pre-render at build time (no generateStaticParams).
+ * The kid-independent chrome (sidebar, top bar, back link, container) forms
+ * the static shell; the kid-dependent content runs inside a <Suspense>
  * boundary because `params` is only available after resolve (required by
- * cacheComponents; `dynamicParams` is not available there). An unknown
- * childId falls through to notFound() while the eight known kids stay
- * statically pre-rendered at build time.
+ * cacheComponents). An unknown or malformed uuid falls through to notFound()
+ * on request.
  */
 export default function KidProfile({ params }: PageProps<"/kids/[childId]">) {
   return (

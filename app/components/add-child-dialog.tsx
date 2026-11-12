@@ -1,14 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { addChild } from "@/app/kids/actions";
+import type { RoomView } from "@/lib/children";
 import { PlusIcon } from "./icons";
 
-type Room = {
-  id: string;      // "soles" | "luna" | "estrellas"
-  label: string;   // "Soles" | "Luna" | "Estrellas"
-};
-
-type FormData = {
+type ChildForm = {
   fullName: string;     // NOMBRE COMPLETO
   birthDate: string;    // FECHA DE NACIMIENTO (dd/mm/aaaa)
   roomId: string;       // SALA
@@ -22,27 +19,32 @@ type FormErrors = {
   roomId?: string;
 };
 
-const ROOMS: Room[] = [
-  { id: "soles", label: "Soles" },
-  { id: "luna", label: "Luna" },
-  { id: "estrellas", label: "Estrellas" },
-];
+type AddChildDialogProps = {
+  /** SALA options from the database (SPEC 09). */
+  rooms: RoomView[];
+};
+
+const emptyForm = (rooms: RoomView[]): ChildForm => ({
+  fullName: "",
+  birthDate: "",
+  roomId: rooms[0]?.id ?? "",
+  allergies: "",
+  medicalNotes: "",
+});
 
 /**
  * "Agregar niño" modal: trigger button + dialog panel, self-contained client
  * component. Mirrors references/pantallas/agregar-nino.dc.html pixel-wise.
- * No backend, no routes — mock-only ("solo interfaces" rule).
+ * Save calls the addChild Server Action: on success it shows the "Niño
+ * agregado" toast and the revalidated /kids list renders the new card; on a
+ * server error the modal stays open and the message appears under the form.
  */
-export function AddChildDialog() {
+export function AddChildDialog({ rooms }: AddChildDialogProps) {
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState<FormData>({
-    fullName: "",
-    birthDate: "",
-    roomId: "soles",
-    allergies: "",
-    medicalNotes: "",
-  });
+  const [form, setForm] = useState<ChildForm>(() => emptyForm(rooms));
   const [errors, setErrors] = useState<FormErrors>({});
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
   const [showToast, setShowToast] = useState(false);
 
   const firstNameRef = useRef<HTMLInputElement>(null);
@@ -71,14 +73,9 @@ export function AddChildDialog() {
   };
 
   const resetForm = () => {
-    setForm({
-      fullName: "",
-      birthDate: "",
-      roomId: "soles",
-      allergies: "",
-      medicalNotes: "",
-    });
+    setForm(emptyForm(rooms));
     setErrors({});
+    setServerError(null);
     setShowToast(false);
   };
 
@@ -123,6 +120,7 @@ export function AddChildDialog() {
       nextErrors.roomId = "Campo obligatorio";
     }
     setErrors(nextErrors);
+    setServerError(null);
     return Object.keys(nextErrors).length === 0 ? null : nextErrors;
   };
 
@@ -136,10 +134,24 @@ export function AddChildDialog() {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const nextErrors = validate();
     if (nextErrors) {
       focusFirstError(nextErrors);
+      return;
+    }
+    setSaving(true);
+    const payload = new FormData();
+    payload.set("fullName", form.fullName.trim());
+    payload.set("birthDate", form.birthDate.trim());
+    payload.set("roomId", form.roomId);
+    payload.set("allergies", form.allergies);
+    payload.set("medicalNotes", form.medicalNotes);
+    const result = await addChild(payload);
+    setSaving(false);
+    if (result.error) {
+      // Server rejected the insert: keep the modal open, show it under the form.
+      setServerError(result.error);
       return;
     }
     setShowToast(true);
@@ -196,9 +208,10 @@ export function AddChildDialog() {
           <button
             type="button"
             onClick={handleSave}
-            className="text-[#d9583c] font-extrabold text-[15px]"
+            disabled={saving}
+            className="text-[#d9583c] font-extrabold text-[15px] disabled:opacity-60"
           >
-            Guardar
+            {saving ? "Guardando…" : "Guardar"}
           </button>
         </div>
 
@@ -261,7 +274,7 @@ export function AddChildDialog() {
                   onChange={(e) => setForm({ ...form, roomId: e.target.value })}
                   className="w-full px-[16px] py-[13px] rounded-[14px] border-[1.5px] border-[#eadfd0] bg-white text-[15px] text-ink font-semibold appearance-none cursor-pointer"
                 >
-                  {ROOMS.map((room) => (
+                  {rooms.map((room) => (
                     <option key={room.id} value={room.id}>
                       {room.label}
                     </option>
@@ -317,9 +330,16 @@ export function AddChildDialog() {
               className="w-full min-h-[90px] resize-vertical px-[16px] py-[13px] rounded-[14px] border-[1.5px] border-[#eadfd0] bg-white text-[15px] text-ink leading-[1.5]"
             />
           </div>
+
+          {/* Server-side rejection: shown under the form, modal stays open */}
+          {serverError && (
+            <p className="text-[13px] font-bold text-[#d9583c]" role="alert">
+              {serverError}
+            </p>
+          )}
         </div>
 
-        {/* Toast: mock confirmation ("Niño agregado") */}
+        {/* Toast: confirmation after the addChild Server Action succeeded */}
         {showToast && (
           <div
             className="fixed bottom-[24px] left-[50%] z-[60] -translate-x-1/2 rounded-[14px] bg-[#3f362e] px-[16px] py-[10px] text-[14px] text-white shadow-lg"

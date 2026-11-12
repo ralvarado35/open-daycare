@@ -1,4 +1,18 @@
-import type { Parent, ParentStatus } from "@/lib/kids-data";
+// Own parent types (SPEC 09): this file keeps them after lib/kids-data.ts was
+// dropped, until the parent_children spec gives them real data again.
+export type ParentStatus = "active" | "pending";
+
+export type Parent = {
+  id: string;
+  // Initials rendered inside the avatar circle ("L", "D").
+  initials: string;
+  avatarBg: string;
+  // Spanish UI label: "Lucía Fernández".
+  name: string;
+  // Spanish UI label: "Mamá · activa" | "Papá · invitación enviada".
+  relationLabel: string;
+  status: ParentStatus;
+};
 
 // Chip presentation per parent account status, as in the reference comp
 // (references/pantallas/perfil-nino.dc.html). Spanish labels live here,
