@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { PlusIcon, SunIcon, WarningIcon } from "@/app/components/icons";
+import { SunIcon, WarningIcon } from "@/app/components/icons";
+import { LinkParentTrigger } from "@/app/components/link-parent-trigger";
 import { getChildById } from "@/lib/children";
 import { daySummaryHref, editChildHref } from "@/lib/nav";
 
@@ -16,8 +17,9 @@ const dataRows = [
  * <Suspense> boundary rendered by the `KidProfile` shell: `params` resolves
  * after Suspense (required by cacheComponents), the child is fetched by uuid
  * with 'use cache: private', and an unknown or malformed id falls through to
- * notFound(). The "PADRES VINCULADOS" panel has no rows until the
- * parent_children spec; "Vincular otro padre" stays a decorative "#".
+ * notFound(). The "PADRES VINCULADOS" panel has no rows until the parent
+ * counters spec; "Vincular otro padre" opens the SPEC 08 LinkParentDialog
+ * through its client trigger (invitation + activation email).
  */
 export async function KidProfileContent({
   params,
@@ -103,14 +105,10 @@ export async function KidProfileContent({
           <div className="mb-[14px] text-[12.5px] font-extrabold tracking-[0.8px] text-[#8a7c6d]">
             PADRES VINCULADOS
           </div>
-          <a href="#" className="flex items-center gap-3 cursor-pointer">
-            <span className="flex h-10 w-10 flex-none items-center justify-center rounded-full border-[1.5px] border-dashed border-[#d8cbba] text-[#b0a290] cursor-pointer">
-              <PlusIcon size={18} strokeWidth={2.2} />
-            </span>
-            <span className="text-[14.5px] font-extrabold text-[#c5503a] cursor-pointer">
-              Vincular otro padre
-            </span>
-          </a>
+          <LinkParentTrigger
+            childId={kid.id}
+            childName={`${kid.firstName} ${kid.lastName}`.trim()}
+          />
         </div>
       </div>
     </div>
