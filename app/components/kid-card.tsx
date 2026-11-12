@@ -1,15 +1,15 @@
 import Link from "next/link";
-import type { Kid } from "@/lib/kids-data";
+import type { ChildView } from "@/lib/children";
 import { ChevronRightIcon } from "./icons";
 
 type KidCardProps = {
-  kid: Kid;
+  kid: ChildView;
 };
 
 /**
- * Kid card for the children list. Links to the kid's own profile page. The tail
- * is conditional: allergy pill, VINCULAR pill (kid without linked parents) or
- * plain chevron, exactly as in the reference comp.
+ * Kid card for the children list. Links to the kid's own profile page
+ * (/kids/{uuid}). The tail is conditional: allergy pill (only when the child
+ * has allergy_tags) or plain chevron, exactly as in the reference comp.
  */
 export function KidCard({ kid }: KidCardProps) {
   return (
@@ -34,10 +34,6 @@ export function KidCard({ kid }: KidCardProps) {
       {kid.allergyTag ? (
         <span className="flex-none rounded-full bg-[#fbd8cc] px-[9px] py-[5px] text-[11px] font-extrabold text-[#d9684a]">
           {kid.allergyTag}
-        </span>
-      ) : kid.needsLinking ? (
-        <span className="flex-none rounded-full bg-[#f9d2de] px-[9px] py-[5px] text-[11px] font-extrabold text-[#c56486]">
-          VINCULAR
         </span>
       ) : (
         <ChevronRightIcon className="flex-none text-[#cbb89f]" />

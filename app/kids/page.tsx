@@ -1,14 +1,71 @@
+import { Suspense } from "react";
 import { MobileNav } from "@/app/components/mobile-nav";
 import { SearchIcon } from "@/app/components/icons";
 import { KidCard } from "@/app/components/kid-card";
 import { AddChildDialog } from "@/app/components/add-child-dialog";
 import { Sidebar } from "@/app/components/sidebar";
-import { kids } from "@/lib/kids-data";
+import { getStaffDaycareId, listRooms, listRoomsWithChildren } from "@/lib/children";
 
 /**
- * Children list. Static rendering of the mock data from lib/kids-data.ts,
- * mirroring the reference comp (references/pantallas/ninos.dc.html). The
- * search input is decorative: there is no filtering logic in this demo.
+ * Header CTA: resolves the staff's rooms server-side and hands them to the
+ * dialog as a prop. Behind a <Suspense> hole so the static shell does not
+ * block on cookies() under cacheComponents.
+ */
+async function AddChildDialogLoader() {
+  const daycareId = await getStaffDaycareId();
+  if (!daycareId) {
+    return <AddChildDialog rooms={[]} />;
+  }
+  const rooms = await listRooms(daycareId);
+  return <AddChildDialog rooms={rooms} />;
+}
+
+/**
+ * Room sections: one divider per room ("SALA SOLES · 3 niños") ordered by
+ * created_at, each followed by a grid of that room's active children. Rooms
+ * with no children render the divider and an empty grid.
+ */
+async function RoomSections() {
+  const daycareId = await getStaffDaycareId();
+  if (!daycareId) {
+    return null;
+  }
+  const rooms = await listRoomsWithChildren(daycareId);
+
+  return (
+    <>
+      {rooms.map((room) => {
+        const childCount = room.children.length;
+        const countLabel = `${childCount} ${childCount === 1 ? "niño" : "niños"}`;
+        return (
+          <section key={room.id} className="mb-6">
+            {/* Room divider with real count */}
+            <div className="mb-[14px] flex items-center gap-3">
+              <span className="text-[12.5px] font-extrabold tracking-[0.8px] text-ink">
+                SALA {room.label.toUpperCase()}
+              </span>
+              <span className="text-[13px] text-ink-faint">{countLabel}</span>
+              <span className="h-px flex-1 bg-line-faint" />
+            </div>
+
+            {/* Kid cards: single column below md (768px), two above */}
+            <div className="grid grid-cols-1 gap-[14px] md:grid-cols-2">
+              {room.children.map((child) => (
+                <KidCard key={child.id} kid={child} />
+              ))}
+            </div>
+          </section>
+        );
+      })}
+    </>
+  );
+}
+
+/**
+ * Children list backed by Supabase (SPEC 09). Chrome (sidebar, top bar,
+ * header, decorative search) is the static shell; the dialog and the room
+ * sections stream in from 'use cache: private' data functions. The search
+ * input stays decorative: no filtering logic in this spec.
  */
 export default function Kids() {
   return (
@@ -25,7 +82,9 @@ export default function Kids() {
               </p>
               <h1 className="font-display text-[30px] font-semibold text-ink">Niños</h1>
             </div>
-            <AddChildDialog />
+            <Suspense fallback={null}>
+              <AddChildDialogLoader />
+            </Suspense>
           </div>
 
           {/* Decorative search box (no filtering logic) */}
@@ -39,21 +98,9 @@ export default function Kids() {
             />
           </div>
 
-          {/* Room divider */}
-          <div className="mb-[14px] flex items-center gap-3">
-            <span className="text-[12.5px] font-extrabold tracking-[0.8px] text-ink">
-              SALA SOLES
-            </span>
-            <span className="text-[13px] text-ink-faint">{kids.length} niños</span>
-            <span className="h-px flex-1 bg-line-faint" />
-          </div>
-
-          {/* Kid cards: single column below md (768px), two above */}
-          <div className="grid grid-cols-1 gap-[14px] md:grid-cols-2">
-            {kids.map((kid) => (
-              <KidCard key={kid.id} kid={kid} />
-            ))}
-          </div>
+          <Suspense fallback={null}>
+            <RoomSections />
+          </Suspense>
         </div>
       </main>
     </div>
