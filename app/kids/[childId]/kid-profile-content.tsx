@@ -1,8 +1,10 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { SunIcon, WarningIcon } from "@/app/components/icons";
+import { LinkedParentRow } from "@/app/components/linked-parent-row";
 import { LinkParentTrigger } from "@/app/components/link-parent-trigger";
 import { getChildById } from "@/lib/children";
+import { getLinkedParents } from "@/lib/linked-parents";
 import { daySummaryHref, editChildHref } from "@/lib/nav";
 
 // Static headers of the data card, rendered in the comp's order.
@@ -17,9 +19,9 @@ const dataRows = [
  * <Suspense> boundary rendered by the `KidProfile` shell: `params` resolves
  * after Suspense (required by cacheComponents), the child is fetched by uuid
  * with 'use cache: private', and an unknown or malformed id falls through to
- * notFound(). The "PADRES VINCULADOS" panel has no rows until the parent
- * counters spec; "Vincular otro padre" opens the SPEC 08 LinkParentDialog
- * through its client trigger (invitation + activation email).
+ * notFound(). The "PADRES VINCULADOS" panel renders real rows (SPEC 09):
+ * accepted links + valid pending invitations through LinkedParentRow, with
+ * the "Vincular otro padre" trigger (SPEC 08 LinkParentDialog) last.
  */
 export async function KidProfileContent({
   params,
@@ -27,7 +29,10 @@ export async function KidProfileContent({
   params: { childId: string } | Promise<{ childId: string }>;
 }) {
   const { childId } = await params;
-  const kid = await getChildById(childId);
+  const [kid, linkedParents] = await Promise.all([
+    getChildById(childId),
+    getLinkedParents(childId),
+  ]);
   if (!kid) {
     notFound();
   }
@@ -92,7 +97,7 @@ export async function KidProfileContent({
         </div>
       </div>
 
-      {/* Side column: day summary CTA, linked parents (empty until parent specs) */}
+      {/* Side column: day summary CTA, linked parents panel (SPEC 09) */}
       <div className="flex w-[300px] flex-none flex-col gap-[14px]">
         <Link
           href={daySummaryHref}
@@ -105,10 +110,27 @@ export async function KidProfileContent({
           <div className="mb-[14px] text-[12.5px] font-extrabold tracking-[0.8px] text-[#8a7c6d]">
             PADRES VINCULADOS
           </div>
-          <LinkParentTrigger
-            childId={kid.id}
-            childName={`${kid.firstName} ${kid.lastName}`.trim()}
-          />
+          {/* Comp order: accepted rows, then pending, then the trigger. The
+              trigger's extra 8px top padding only applies with rows present,
+              so the empty panel stays pixel-identical to the previous one. */}
+          <div className="flex flex-col gap-[14px]">
+            {linkedParents.map((parent) => (
+              <LinkedParentRow key={parent.id} parent={parent} />
+            ))}
+            {linkedParents.length > 0 ? (
+              <div className="pt-2">
+                <LinkParentTrigger
+                  childId={kid.id}
+                  childName={`${kid.firstName} ${kid.lastName}`.trim()}
+                />
+              </div>
+            ) : (
+              <LinkParentTrigger
+                childId={kid.id}
+                childName={`${kid.firstName} ${kid.lastName}`.trim()}
+              />
+            )}
+          </div>
         </div>
       </div>
     </div>
