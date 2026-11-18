@@ -159,5 +159,9 @@ export async function sendParentInvitation(
     return { ok: false, error: emailResult.error };
   }
 
+  // Refresh the profile's "PADRES VINCULADOS" panel (SPEC 09): the new
+  // PENDIENTE row appears when the dialog closes with "Listo", without a
+  // manual reload.
+  revalidatePath(`/kids/${childId}`);
   return { ok: true, code: invitation.code };
 }

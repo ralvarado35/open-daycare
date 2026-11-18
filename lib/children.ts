@@ -26,7 +26,9 @@ export type ChildView = {
   lastName: string;
   // Spanish UI label: "3 años".
   ageLabel: string;
-  // Spanish UI label: fixed "sin padres vinculados" until the parent_children spec.
+  // Spanish UI label computed from parent_children (SPEC 09): "sin padres
+  // vinculados" | "1 padre vinculado" | "N padres vinculados". Only accepted
+  // links count (parent_children rows only exist after acceptance).
   parentsLinkedLabel: string;
   avatarBg: string;
   avatarFg: string;
@@ -215,6 +217,15 @@ export function birthDateInputToIso(input: string): string | null {
   return `${match[3]}-${match[2]}-${match[1]}`;
 }
 
+// "sin padres vinculados" | "1 padre vinculado" | "N padres vinculados".
+// Counts only accepted links (SPEC 09): a pending invitation is not yet a
+// linked parent.
+export function parentsLinkedLabel(count: number): string {
+  if (count <= 0) return "sin padres vinculados";
+  if (count === 1) return "1 padre vinculado";
+  return `${count} padres vinculados`;
+}
+
 function mapChildToView(row: ChildRow, roomLabel: string): ChildView {
   const { firstName, lastName } = splitFullName(row.full_name);
   const firstTag = row.allergy_tags?.[0];
@@ -288,10 +299,35 @@ export async function listRoomsWithChildren(daycareId: string): Promise<RoomWith
     .order("created_at", { ascending: true, foreignTable: "children" });
 
   const rows = (data ?? []) as unknown as RoomRow[];
+
+  // Real linked-parent counter for the /kids cards (SPEC 09): a single
+  // `parent_children` query for every child of the daycare, grouped in
+  // TypeScript — never one query per child. RLS already scopes the rows to
+  // children of the staff user's daycare; a query failure falls back to the
+  // "sin padres vinculados" label instead of breaking the list.
+  const childIds = rows.flatMap((room) => (room.children ?? []).map((child) => child.id));
+  const linkCounts = new Map<string, number>();
+  if (childIds.length > 0) {
+    const { data: linkRows, error } = await supabase
+      .from("parent_children")
+      .select("child_id")
+      .in("child_id", childIds);
+    if (error) {
+      console.error("listRoomsWithChildren: parent_children count failed:", error.message);
+    } else {
+      for (const row of (linkRows ?? []) as { child_id: string }[]) {
+        linkCounts.set(row.child_id, (linkCounts.get(row.child_id) ?? 0) + 1);
+      }
+    }
+  }
+
   return rows.map((room) => ({
     id: room.id,
     label: room.name,
-    children: (room.children ?? []).map((child) => mapChildToView(child, room.name)),
+    children: (room.children ?? []).map((child) => ({
+      ...mapChildToView(child, room.name),
+      parentsLinkedLabel: parentsLinkedLabel(linkCounts.get(child.id) ?? 0),
+    })),
   }));
 }
 
