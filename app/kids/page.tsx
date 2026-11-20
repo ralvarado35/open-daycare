@@ -17,7 +17,9 @@ async function AddChildDialogLoader() {
     return <AddChildDialog rooms={[]} />;
   }
   const rooms = await listRooms(daycareId);
-  return <AddChildDialog rooms={rooms} />;
+  return <AddChildDialog rooms={rooms} />
+
+
 }
 
 /**
