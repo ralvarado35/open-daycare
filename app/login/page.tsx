@@ -1,5 +1,11 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { LoginView } from "./login-view";
+
+export const metadata: Metadata = {
+  title: "Iniciar sesión | OpenDayCare",
+  description: "Ingresá a OpenDayCare para ver el día de hoy.",
+};
 
 /**
  * Login route. The interactive screen is a client component (LoginView); this

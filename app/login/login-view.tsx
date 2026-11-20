@@ -39,11 +39,11 @@ export function LoginView({ activated }: { activated: boolean }) {
   }
 
   return (
-    <div className="grid min-h-dvh grid-cols-1 bg-cream md:grid-cols-[1.05fr_1fr]">
+    <main id="main-content" className="grid min-h-dvh grid-cols-1 bg-cream md:grid-cols-[1.05fr_1fr]">
       {/* Brand panel: gradient + logo + headline */}
       <section className="relative flex flex-col justify-between overflow-hidden bg-[linear-gradient(155deg,#f6a98e_0%,#f2937a_45%,#ec7e62_100%)] px-6 py-8 text-white md:px-[60px] md:py-[56px]">
-        <div className="absolute -right-[120px] -top-[140px] h-[420px] w-[420px] rounded-full bg-white/12" />
-        <div className="absolute -bottom-[110px] -left-[80px] h-[300px] w-[300px] rounded-full bg-white/10" />
+        <div aria-hidden="true" className="absolute -right-[120px] -top-[140px] h-[420px] w-[420px] rounded-full bg-white/12" />
+        <div aria-hidden="true" className="absolute -bottom-[110px] -left-[80px] h-[300px] w-[300px] rounded-full bg-white/10" />
 
         <div className="relative flex items-center gap-[13px]">
           <div className="flex h-[46px] w-[46px] items-center justify-center rounded-[14px] bg-white/22">
@@ -67,7 +67,7 @@ export function LoginView({ activated }: { activated: boolean }) {
         </div>
 
         <p className="relative hidden text-[14px] text-white/90 md:block">
-          🌿 Guardería Sala Soles
+          <span aria-hidden="true">🌿</span> Guardería Sala Soles
         </p>
       </section>
 
@@ -77,8 +77,9 @@ export function LoginView({ activated }: { activated: boolean }) {
           {/* SPEC 08: success banner after account activation */}
           {activated && (
             <div
-              className="mb-[18px] rounded-[14px] border border-[#b9dcc4] bg-[#e6f4ea] px-4 py-[12px] text-[14.5px] font-bold text-[#2e7d4f]"
+              className="mb-[18px] rounded-[14px] border border-[#b9dcc4] bg-[#e6f4ea] px-4 py-[12px] text-[14.5px] font-bold text-[#2a7347]"
               role="status"
+              aria-live="polite"
             >
               Cuenta activada. Iniciá sesión.
             </div>
@@ -87,14 +88,14 @@ export function LoginView({ activated }: { activated: boolean }) {
           <h2 className="mb-[6px] font-display text-[30px] font-semibold text-ink">
             Iniciar sesión
           </h2>
-          <p className="mb-[28px] text-[15px] text-ink-soft">
+          <p className="mb-[28px] text-[15px] text-ink-muted">
             Ingresá para ver el día de hoy.
           </p>
 
           <form onSubmit={handleSubmit}>
             <label
               htmlFor="login-email"
-              className="mb-[8px] block text-[12px] font-bold tracking-[0.7px] text-ink-soft"
+              className="mb-[8px] block text-[12px] font-bold tracking-[0.7px] text-ink-muted"
             >
               EMAIL
             </label>
@@ -105,12 +106,14 @@ export function LoginView({ activated }: { activated: boolean }) {
               defaultValue="caro@opendaycare.com"
               autoComplete="email"
               required
-              className="mb-[18px] w-full rounded-[14px] border border-line bg-white px-4 py-[14px] text-[15px] text-ink outline-none"
+              aria-invalid={error ? true : undefined}
+              aria-describedby={error ? "login-error" : undefined}
+              className="mb-[18px] w-full rounded-[14px] border border-line bg-white px-4 py-[14px] text-[15px] text-ink outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
             />
 
             <label
               htmlFor="login-password"
-              className="mb-[8px] block text-[12px] font-bold tracking-[0.7px] text-ink-soft"
+              className="mb-[8px] block text-[12px] font-bold tracking-[0.7px] text-ink-muted"
             >
               CONTRASEÑA
             </label>
@@ -121,11 +124,18 @@ export function LoginView({ activated }: { activated: boolean }) {
               placeholder="••••••••"
               autoComplete="current-password"
               required
-              className="mb-[10px] w-full rounded-[14px] border border-line bg-white px-4 py-[14px] text-[15px] text-ink outline-none placeholder:text-[#b6a99b]"
+              aria-invalid={error ? true : undefined}
+              aria-describedby={error ? "login-error" : undefined}
+              className="mb-[10px] w-full rounded-[14px] border border-line bg-white px-4 py-[14px] text-[15px] text-ink outline-none placeholder:text-ink-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
             />
 
             {error && (
-              <p className="mb-[12px] text-[12.5px] text-center text-[#c5503a]">
+              <p
+                id="login-error"
+                role="alert"
+                aria-live="assertive"
+                className="mb-[12px] text-center text-[12.5px] text-[#b0432f]"
+              >
                 {error}
               </p>
             )}
@@ -133,7 +143,7 @@ export function LoginView({ activated }: { activated: boolean }) {
             <div className="mb-[20px] text-right">
               <Link
                 href={forgotPasswordHref}
-                className="text-[13.5px] font-bold text-[#c5503a]"
+                className="inline-block min-h-[24px] py-1 text-[13.5px] font-bold text-[#b0432f] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
               >
                 ¿Olvidaste tu contraseña?
               </Link>
@@ -141,16 +151,16 @@ export function LoginView({ activated }: { activated: boolean }) {
 
             <button
               type="submit"
-              className="block w-full rounded-[15px] bg-[linear-gradient(180deg,#f4977e,#ee8164)] py-[15px] text-center text-[16px] font-extrabold text-white shadow-[0_10px_22px_-8px_rgba(238,129,100,0.7)]"
+              className="block w-full rounded-[15px] bg-[linear-gradient(180deg,#f4977e,#ee8164)] py-[15px] text-center text-[16px] font-extrabold text-white shadow-[0_10px_22px_-8px_rgba(238,129,100,0.7)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
             >
               Iniciar sesión
             </button>
 
-            <p className="mt-[24px] text-center text-[14.5px] text-ink-soft">
+            <p className="mt-[24px] text-center text-[14.5px] text-ink-muted">
               ¿Te invitó la guardería?{" "}
               <Link
                 href={activateAccountHref}
-                className="font-extrabold text-[#c5503a]"
+                className="inline-block min-h-[24px] py-1 font-extrabold text-[#b0432f] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
               >
                 Activá tu cuenta
               </Link>
@@ -158,6 +168,6 @@ export function LoginView({ activated }: { activated: boolean }) {
           </form>
         </div>
       </section>
-    </div>
+    </main>
   );
 }
