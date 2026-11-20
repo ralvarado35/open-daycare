@@ -94,6 +94,7 @@ Skills instaladas (registradas en `skills-lock.json` y disponibles en `.agents/s
 - `/spec` — crear las especificaciones.
 - `/spec-impl` — usar esta skill para hacer las implementaciones.
 - `/verify-spec` — comando (`.opencode/commands/verify-spec.md`) para verificar los criterios de aceptación de un spec: se delega en el agente verificador y acepta la ruta del spec como argumento (ej. `/verify-spec specs/02-ninos.md`); sin argumento revisa todos los specs de `specs/*.md`.
+- `/react-best-practices` — comando (`.opencode/commands/react-best-practices.md`) para aplicar las mejores prácticas de React/Next.js en las rutas indicadas (ej. `/react-best-practices app/page.tsx lib/queries`); se delega en el agente `react-best-practices`.
 - Especs de base de datos: cualquier archivo de especificación que tenga que ver con la base de datos (tablas, esquemas, consultas, migraciones complementarias, etc.) debe ir en la carpeta `spec/database/`.
 
 
@@ -105,6 +106,37 @@ El agente `spec-verifier` (definido en `.opencode/agents/spec-verifier.md`) es e
 - Solo edita el bloque "Criterios de aceptación" de los specs: si encuentra un bug de código, desmarca el criterio y reporta la corrección necesaria, pero no toca `app/`, `lib/`, configs ni ningún otro archivo.
 - No confía en checks previos: re-verifica cada criterio aunque ya esté marcado `[x]`, y deja un reporte con tabla de veredictos (✅ / ❌ / ⚠️) y lista de pendientes.
 - Ya está disponible como subagente (`agent: spec-verifier`), y el comando `/verify-spec` lo invoca por nosotros.
+
+## Agente react-best-practices
+
+El agente `react-best-practices` (definido en `.opencode/agents/react-best-practices.md`) audita y corrige código de React/Next.js en las rutas que se le indiquen:
+
+- Carga la skill `vercel-react-best-practices` (+ `vercel-composition-patterns` para problemas de composición), clasifica Server/Client Components y ordena los hallazgos por impacto.
+- Contrasta cada cambio con la documentación vigente vía Context7 (`resolve-library-id` + `query-docs` de React y Next.js): no aplica nada que la doc no respalde y cita la evidencia.
+- Solo edita `app/`, `components/`, `lib/`, `utils/` y `proxy.ts`; no toca configs, dependencias, `specs/`, `references/` ni ejecuta git. Lo que requiera cambios ahí queda como pendiente en el reporte.
+- Verifica con `npm run lint` y `npm run build`, y deja un reporte con tabla de cambios, no aplicados y pendientes.
+- Está disponible como agente primario y como subagente (`agent: react-best-practices`); el comando `/react-best-practices` lo invoca por nosotros.
+
+## Agente db-migrator
+
+El agente `db-migrator` (definido en `.opencode/agents/db-migrator.md`) asegura que existan las migraciones en `supabase/migrations/` y que estén aplicadas al proyecto de Supabase:
+
+- Sincroniza el inventario local (archivos `supabase/migrations/*.sql`) con el remoto (`list_migrations` / `list_tables` del MCP de Supabase), detectando migraciones pendientes, drift (remoto sin local) y faltantes (tablas/enums del esquema de referencia sin migración).
+- Crea archivos de migración faltantes siguiendo el patrón del repo (prefijo numérico de 4 dígitos, `snake_case`, RLS, helpers en esquema `private`, seed con guards), basándose en la referencia `db-schema` y en los specs de `specs/databases/`.
+- Aplica las migraciones pendientes en orden vía `apply_migration` (una a la vez, verificando cada una), creando migraciones `fix_...` nuevas en lugar de reescribir las ya aplicadas.
+- Corre `get_advisors` (security/performance) tras aplicar y cierra con `npm run lint` + `npm run build`.
+- Solo edita `supabase/**` (y documenta en `specs/databases/**` si hace falta); no toca `app/`, `lib/`, `components/`, configs ni ejecuta git. Los cambios de código que consuman el nuevo esquema quedan como pendiente para spec-impl / react-best-practices.
+- Está disponible como agente primario y como subagente (`agent: db-migrator`); el comando `/db-migrator` lo invoca por nosotros.
+
+## Agente accessibility-checker
+
+El agente `accessibility-checker` (definido en `.opencode/agents/accessibility-checker.md`) audita y corrige la accesibilidad (WCAG 2.2 nivel AA) de los archivos indicados:
+
+- Revisa semántica, teclado, foco, ARIA, contraste, formularios, imágenes y patrones específicos de Next.js/React, asignando a cada hallazgo el criterio WCAG que incumple y su severidad.
+- Contrasta cada cambio con la documentación vigente vía Context7 (React/Next.js) y la referencia W3C de WCAG 2.2; no aplica nada que la doc no respalde.
+- Aplica correcciones mínimas en `app/`, `components/`, `lib/` y `utils/`; no toca configs, dependencias, `specs/`, `references/` ni ejecuta git.
+- Verifica con `npm run lint` y `npm run build`, y cuando el hallazgo es visual/interactivo usa Playwright (capturas en `.playwright-mcp/`).
+- Está disponible como agente primario y como subagente (`agent: accessibility-checker`); el comando `/accessibility-checker` lo invoca por nosotros.
 
 ## Reglas de codigo
 - Usar codigo limpio, nombres, funciones, variables, clases y todo lo demas en ingles
